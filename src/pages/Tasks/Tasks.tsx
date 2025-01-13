@@ -55,7 +55,7 @@ const Tasks = () => {
     });
   }, []);
 
-  const handleStatusChange = (task: TaskType, value: string) => {
+  const handleStatusChange = async(task: TaskType, value: string) => {
     const payload = {
       status: value,
       action: {
@@ -68,8 +68,8 @@ const Tasks = () => {
       },
     };
 
-    performTaskAction(task.taskId!, task.projectId!, payload);
-    fetchTasks({ ...query, skip, limit, paginate: true });
+    const success = await performTaskAction(task.taskId!, task.projectId!, payload, false);
+    if (success) fetchTasks({ ...query, skip, limit, paginate: true });
   };
 
   const columns: ColumnDef[] = [

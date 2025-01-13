@@ -91,5 +91,6 @@ export interface TaskStoreType {
     taskId: string,
     projectId: string,
     payload: object,
-  ) => void;
+    isSingleTask?:boolean
+  ) => Promise<boolean | undefined>;
 }

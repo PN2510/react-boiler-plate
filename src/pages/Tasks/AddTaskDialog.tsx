@@ -75,6 +75,7 @@ const AddTaskDialog = ({ query, skip, limit }: Props) => {
     data.status = TaskStatus.PENDING.toUpperCase();
 
     const { projectId, ...rest } = data;
+    console.log("data", data);
 
     const success = await addTask(projectId, rest);
 
@@ -273,7 +274,7 @@ const AddTaskDialog = ({ query, skip, limit }: Props) => {
             <Controller
               name="dueDate"
               control={control}
-              render={({ field }) => (
+              render={({ field, }) => (
                 <DatePicker
                   autoComplete="false"
                   placeholderText="Select start date"

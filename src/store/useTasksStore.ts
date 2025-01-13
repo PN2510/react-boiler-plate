@@ -79,16 +79,24 @@ export const useTaskStore = create<TaskStoreType>((set, get) => ({
   performTaskAction: async (
     taskId: string,
     projectId: string,
-    payload: object,
+    payload: object, 
+    isSingleTask: boolean=true
   ) => {
     try {
-      await API.patch(
+      const res = await API.patch(
         replaceUrlParams(`${TASKS}/:taskId`, { taskId, projectId }),
         payload,
       );
-      get().fetchTaskByTaskId(taskId);
+      if(isSingleTask){
+        get().fetchTaskByTaskId(taskId);
+      }
+      if(res.status == 200){
+        return true
+      }
+      return false
     } catch (error) {
       console.log('fetchTaskByTaskId: ~ error:', error);
+      return false
     }
   },
 }));
