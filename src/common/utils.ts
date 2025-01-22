@@ -123,3 +123,41 @@ Off Tel No - 022-49700915
 };
 
 // <a href="https://ibb.co/GTRKh0K"><img src="https://i.ibb.co/Rycx59x/image.png" alt="image" border="0"></a>
+
+/**
+ * Copies the given content to the clipboard.
+ * @param content - The text content to be copied.
+ * @returns A promise that resolves to a boolean indicating success or failure.
+ */
+export const copyToClipboard = async function (
+  content: string,
+): Promise<boolean> {
+  try {
+    if (
+      navigator.clipboard &&
+      typeof navigator.clipboard.writeText === 'function'
+    ) {
+      await navigator.clipboard.writeText(content);
+      return true; // Successfully copied using Clipboard API
+    } else {
+      // Fallback for older browsers
+      const textArea = document.createElement('textarea');
+      textArea.value = content;
+
+      // Make the textarea invisible and append it to the document
+      textArea.style.position = 'absolute';
+      textArea.style.left = '-9999px';
+      document.body.appendChild(textArea);
+
+      // Select and copy the content
+      textArea.select();
+      const successful = document.execCommand('copy');
+      document.body.removeChild(textArea);
+
+      return successful; // Successfully copied using execCommand
+    }
+  } catch (error) {
+    console.error('Failed to copy to clipboard:', error);
+    return false;
+  }
+};

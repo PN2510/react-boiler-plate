@@ -1,0 +1,159 @@
+import { CircleX, X } from 'lucide-react';
+import { ROLES, TaskPriority, TaskStatus } from '../../common/enums';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '../../my-components/Accordian';
+import { useLoginStore } from '../../store/useLoginStore';
+import { useProjectStore } from '../../store/useProjectStore';
+import { TaskQuery } from '../../types/useTasksStore.types';
+import DateFilter from './DateFilter';
+
+type TaskFiltersPropType = {
+  query: TaskQuery;
+  setQuery: (query: TaskQuery) => void;
+};
+
+const TaskFilters = ({ setQuery, query }: TaskFiltersPropType) => {
+  const { authenticatedUserRoleId } = useLoginStore();
+  const { projects } = useProjectStore();
+
+  const handleFilterChange = ({ date, month, year }) => {
+    console.log('handleFilterChange', { date, month, year });
+    // setQuery({
+    //   ...query,
+    //   date,
+    //   month,
+    //   year,
+    // });
+  };
+
+  return (
+    <Accordion
+      type="single"
+      defaultValue="item-1"
+      collapsible
+      className="flex-grow"
+    >
+      <AccordionItem value="item-1" className="border-none">
+        <AccordionTrigger className="border hover:no-underline border-slate-300 dark:border-slate-700 rounded-t-md dark:bg-slate-800 px-3 py-3">
+          Task Filters
+        </AccordionTrigger>
+        <AccordionContent className="p-3 border border-slate-300 border-t-0 dark:border-slate-700 rounded-b-md flex gap-5 flex-wrap">
+          <label htmlFor="priority" className="text-sm">
+            <p>Priority:</p>
+            <select
+              id="priority"
+              value={query.priority ? query.priority[0] : ''}
+              className="py-1 px-2 rounded-md border-2 border-slate-300 dark:border-slate-600 bg-transparent dark:bg-slate-900"
+              onChange={(e) => {
+                if (e?.target?.value) {
+                  if (e.target.value === 'RESET') {
+                    setQuery({ ...query, priority: undefined });
+                  } else {
+                    setQuery({ ...query, priority: [e.target.value] });
+                  }
+                }
+              }}
+            >
+              <option value="" disabled className="text-sm">
+                Select Priority
+              </option>
+              <option value="RESET" className="text-xs text-red-400 bg-red-100">
+                Reset &#10006;
+              </option>
+              {Object.entries(TaskPriority).map(([key, priority]) => (
+                <option key={key} value={key}>
+                  {priority}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          <label htmlFor="status" className="text-sm">
+            <p>Status:</p>
+            <select
+              id="status"
+              defaultValue=""
+              value={query.status ? query.status[0] : ''}
+              className="py-1 px-2 rounded-md border-2 border-slate-300 dark:border-slate-600 bg-transparent dark:bg-slate-900"
+              onChange={(e) => {
+                if (e?.target?.value) {
+                  if (e.target.value === 'RESET') {
+                    setQuery({ ...query, status: undefined });
+                  } else {
+                    setQuery({
+                      ...query,
+                      status: [e.target.value],
+                    });
+                  }
+                }
+              }}
+            >
+              <option value="" disabled className="text-sm">
+                Select Status
+              </option>
+              <option value="RESET" className="text-xs text-red-400 bg-red-100">
+                Reset &#10006;
+              </option>
+              {Object.entries(TaskStatus)?.map(([key, status]) => (
+                <option key={key} value={key}>
+                  {status}
+                </option>
+              ))}
+            </select>
+          </label>
+
+          {[ROLES.DIRECTOR, ROLES.TEAM_LEAD].includes(
+            authenticatedUserRoleId as ROLES,
+          ) && (
+            <label htmlFor="projects" className="text-sm">
+              <p>Projects:</p>
+              <select
+                id="projects"
+                defaultValue=""
+                value={query.projectId ? query.projectId[0] : ''}
+                className="py-1 px-2 rounded-md border-2 border-slate-300 dark:border-slate-600 bg-transparent dark:bg-slate-900"
+                onChange={(e) => {
+                  if (e?.target?.value) {
+                    if (e.target.value === 'RESET') {
+                      setQuery({ ...query, projectId: undefined });
+                    } else {
+                      setQuery({
+                        ...query,
+                        projectId: [e.target.value],
+                      });
+                    }
+                  }
+                }}
+              >
+                <option value="" disabled className="text-sm">
+                  Select Project
+                </option>
+                <option
+                  value="RESET"
+                  className="text-xs text-red-400 bg-red-100"
+                >
+                  Reset &#10006;
+                </option>
+                {projects?.data?.map((project) => (
+                  <option key={project?.projectId} value={project?.projectId}>
+                    {project?.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
+
+          {/* {[ROLES.DIRECTOR].includes(authenticatedUserRoleId as ROLES) && (
+            <DateFilter onFilterChange={handleFilterChange} />
+          )} */}
+        </AccordionContent>
+      </AccordionItem>
+    </Accordion>
+  );
+};
+
+export default TaskFilters;

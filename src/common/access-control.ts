@@ -16,7 +16,7 @@ const hasAccess = (
   return (
     feScopes.includes(fullScope) ||
     feScopes.includes(`${module}:${action}:*`) || // Wildcard for all fields/submodules
-    feScopes.includes(`${module}:*`) || // Full access to the module
+    feScopes.includes(`${module}:*:*`) || // Full access to the module
     feScopes.includes(`*:*:*`) // Full access to all modules
   );
 };

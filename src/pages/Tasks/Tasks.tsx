@@ -25,12 +25,14 @@ import {
   TooltipTrigger,
 } from '../../my-components/Tooltip';
 import TaskLabelWrapper from './TaskLabelWrapper';
+import TaskFilters from './TaskFilters';
 const Tasks = () => {
   const { authenticatedUserRoleId, user } = useLoginStore();
   const { fetchTasks, tasks, performTaskAction } = useTaskStore();
-  const { fetchProjects, projects } = useProjectStore();
+  const { fetchProjects } = useProjectStore();
   const [skip, setSkip] = useState(0);
   const [limit, setLimit] = useState(10);
+
   const [query, _setQuery] = useState<TaskQuery>({
     paginate: true,
     isActive: true,
@@ -55,7 +57,7 @@ const Tasks = () => {
     });
   }, []);
 
-  const handleStatusChange = async(task: TaskType, value: string) => {
+  const handleStatusChange = async (task: TaskType, value: string) => {
     const payload = {
       status: value,
       action: {
@@ -68,7 +70,12 @@ const Tasks = () => {
       },
     };
 
-    const success = await performTaskAction(task.taskId!, task.projectId!, payload, false);
+    const success = await performTaskAction(
+      task.taskId!,
+      task.projectId!,
+      payload,
+      false,
+    );
     if (success) fetchTasks({ ...query, skip, limit, paginate: true });
   };
 
@@ -250,91 +257,43 @@ const Tasks = () => {
     },
   ];
 
+  const initialOptions = [
+    { value: '1', label: 'Option 1' },
+    { value: '2', label: 'Option 2' },
+    { value: '3', label: 'Option 3' },
+    { value: '4', label: 'Option 4' },
+    { value: '5', label: 'Option 5' },
+  ];
+
+  const loadMoreOptions = async () => {
+    // Simulating an API call
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    return [
+      { value: '6', label: 'Option 6' },
+      { value: '7', label: 'Option 7' },
+      { value: '8', label: 'Option 8' },
+    ];
+  };
+
   return (
     <>
       {/* <Breadcrumb pageName="Tasks" /> */}
-      <div className="w-full max-w-full flex flex-col items-end rounded-md h-full">
-        <div className="flex gap-3 items-center">
-          <label htmlFor="priority" className="text-sm">
-            Priority:{' '}
-            <select
-              id="priority"
-              defaultValue=""
-              className="py-1 px-2 rounded-md border-2 border-slate-300 dark:border-slate-600 bg-transparent dark:bg-slate-900"
-              onChange={(e) => {
-                if (e?.target?.value) {
-                  _setQuery({ ...query, priority: [e.target.value] });
-                }
-              }}
-            >
-              <option value="" disabled className="text-sm">
-                Select Priority
-              </option>
-              {Object.entries(TaskPriority).map(([key, priority]) => (
-                <option key={key} value={key}>
-                  {priority}
-                </option>
-              ))}
-            </select>
-          </label>
-          {[ROLES.DIRECTOR, ROLES.TEAM_LEAD].includes(
-            authenticatedUserRoleId as ROLES,
-          ) && (
-            <label htmlFor="projects" className="text-sm">
-              Projects:{' '}
-              <select
-                id="projects"
-                defaultValue=""
-                className="py-1 px-2 rounded-md border-2 border-slate-300 dark:border-slate-600 bg-transparent dark:bg-slate-900"
-                onChange={(e) => {
-                  if (e?.target?.value) {
-                    _setQuery({
-                      ...query,
-                      projectId: [e.target.value],
-                    });
-                  }
-                }}
-              >
-                <option value="" disabled className="text-sm">
-                  Select Project
-                </option>
-                {projects?.data?.map((project) => (
-                  <option key={project?.projectId} value={project?.projectId}>
-                    {project?.name}
-                  </option>
-                ))}
-              </select>
-            </label>
-          )}
-
-          {[ROLES.DIRECTOR].includes(authenticatedUserRoleId as ROLES) && (
-            <label htmlFor="status" className="text-sm">
-              Status:{' '}
-              <select
-                id="status"
-                value={query.status}
-                className="py-1 px-2 rounded-md border-2 border-slate-300 dark:border-slate-600 bg-transparent dark:bg-slate-900"
-                onChange={(e) => {
-                  if (e?.target?.value) {
-                    _setQuery({
-                      ...query,
-                      status: [e.target.value],
-                    });
-                  }
-                }}
-              >
-                <option value="" disabled className="text-sm">
-                  Select Status
-                </option>
-
-                {Object.entries(TaskStatus)?.map(([key, status]) => (
-                  <option key={key} value={key}>
-                    {status}
-                  </option>
-                ))}
-              </select>
-            </label>
-          )}
+      <div className="w-full max-w-full flex flex-col rounded-md h-full">
+        <div className="flex flex-col md:flex-row gap-2 md:items-center md:justify-between">
+          <TaskFilters query={query} setQuery={_setQuery} />
+          {/* <label htmlFor="priority" className="text-sm">
+            Team:
+            <CustomDropdown
+              options={initialOptions}
+              placeholder="Select an option"
+              isMulti={false}
+              onSelect={(selected) => setSingleSelected(selected)}
+              onLoadMore={loadMoreOptions}
+            />
+            {singleSelected && (
+              <p className="mt-2">Selected: {singleSelected.label}</p>
+            )}
+          </label> */}
           <AddTaskDialog limit={limit} query={query} skip={skip} />
         </div>
         <Table

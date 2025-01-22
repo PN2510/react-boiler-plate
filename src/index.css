@@ -4,7 +4,8 @@
 @tailwind components;
 @tailwind utilities;
 
-*,body {
+*,
+body {
   font-family: 'Poppins', sans-serif !important;
   font-weight: 400;
   font-style: normal;
@@ -194,7 +195,9 @@ span.flatpickr-weekday,
 .custom-input-date-2::-webkit-calendar-picker-indicator {
   background-image: url(./images/icon/icon-arrow-down.svg);
 }
-
+.react-datepicker-popper {
+  z-index: 4;
+}
 [x-cloak] {
   display: none !important;
 }

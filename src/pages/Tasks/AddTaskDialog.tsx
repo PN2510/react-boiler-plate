@@ -24,14 +24,12 @@ import {
 import renderWithAccessControl from '../../common/access-control';
 import { useProjectStore } from '../../store/useProjectStore';
 
-import { useCommonStore } from '../../store/useCommonStore';
 import { useTeamStore } from '../../store/useTeamStore';
 import { TaskQuery } from '../../types/useTasksStore.types';
 import { useLoginStore } from '../../store/useLoginStore';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { getTaskMembersRoles } from '../../common/utils';
-import { User } from '../../types/user.types';
+import { User } from '../../types/useUserStore.types';
 
 const validationSchema = yup.object().shape({
   drawingTitle: yup.string().required('Title is required'),
@@ -75,7 +73,6 @@ const AddTaskDialog = ({ query, skip, limit }: Props) => {
     data.status = TaskStatus.PENDING.toUpperCase();
 
     const { projectId, ...rest } = data;
-    console.log("data", data);
 
     const success = await addTask(projectId, rest);
 
@@ -142,7 +139,7 @@ const AddTaskDialog = ({ query, skip, limit }: Props) => {
         <DialogTrigger asChild>
           <SecondaryButton
             onClick={() => setIsModalOpen(true)}
-            className="py-1 my-1"
+            className="py-1 w-fit text-xs md:text-base"
             type="button"
             title="Add New Task"
             icon={<CirclePlus size={15} />}
@@ -274,7 +271,7 @@ const AddTaskDialog = ({ query, skip, limit }: Props) => {
             <Controller
               name="dueDate"
               control={control}
-              render={({ field, }) => (
+              render={({ field }) => (
                 <DatePicker
                   autoComplete="false"
                   placeholderText="Select start date"

@@ -25,12 +25,12 @@ const Teams = () => {
       label: 'Name',
       type: 'text',
     },
-    {
-      key: 'project',
-      label: 'Project',
-      type: 'element',
-      render: (row) => <p className="max-w-[200px]">{row?.project?.name}</p>,
-    },
+    // {
+    //   key: 'project',
+    //   label: 'Project',
+    //   type: 'element',
+    //   render: (row) => <p className="max-w-[200px]">{row?.project?.name}</p>,
+    // },
     {
       key: 'members',
       label: 'Members',

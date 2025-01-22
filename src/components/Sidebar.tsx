@@ -6,6 +6,7 @@ import {
   CircleChevronDown,
   CircleChevronUp,
   ClipboardCheck,
+  Cog,
   FolderOpen,
   IdCard,
   ListTodo,
@@ -298,6 +299,17 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                 'CREATE',
                 '*',
               )}
+              <li>
+                <NavLink
+                  to="/settings"
+                  className={`group relative flex items-center gap-2.5 rounded-sm py-2 px-4 font-medium text-slate-500 hover:text-white dark:text-bodydark1 duration-300 ease-in-out hover:bg-graydark dark:hover:bg-meta-4 ${
+                    pathname.includes('users') && 'bg-graydark dark:bg-meta-4'
+                  }`}
+                >
+                  <Cog />
+                  Settings
+                </NavLink>
+              </li>
             </ul>
 
             {/* <ul className="mb-6 flex flex-col gap-1.5">

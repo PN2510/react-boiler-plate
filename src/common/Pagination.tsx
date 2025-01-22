@@ -65,7 +65,7 @@ const Pagination = ({
               setSkip(0); // Reset to the first page on limit change
             }}
           >
-            {[5, 10, 20, 30, 40, 50].map((pageSize) => (
+            {[5, 10, 20, 30, 40, 50, 80, 100, 150].map((pageSize) => (
               <option value={pageSize} key={pageSize}>
                 {pageSize}
               </option>

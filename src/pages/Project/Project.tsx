@@ -7,7 +7,7 @@ import {
 } from '../../types/useProjectStore.types';
 import AddProjectDialog from './AddProjectDialog';
 import dayjs from 'dayjs';
-import { Pencil } from 'lucide-react';
+import { Copy, Pencil } from 'lucide-react';
 import EditProjectDialog from './EditProjectDialog';
 import {
   Tooltip,
@@ -15,6 +15,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '../../my-components/Tooltip';
+import { copyToClipboard } from '../../common/utils';
+import toast from 'react-hot-toast';
 
 const Project = () => {
   const { fetchProjects, projects } = useProjectStore();
@@ -116,15 +118,31 @@ const Project = () => {
       label: 'Action',
       type: 'element',
       render: (row) => (
-        <button
-          onClick={() => {
-            setIsEditModalOpen(true);
-            setProject(row);
-          }}
-          className="p-2 rounded-full dark:text-white bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600"
-        >
-          <Pencil size={15} />
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={() => {
+              setIsEditModalOpen(true);
+              setProject(row);
+            }}
+            className="p-2 rounded-full dark:text-white bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600"
+          >
+            <Pencil size={15} />
+          </button>
+          {/* <button
+            title="Copy Project ID to clipboard (this will help you to add projectId in Roles and Permissions -> User Roles section) while assigning the role"
+            onClick={async () => {
+              const success = await copyToClipboard(row?.projectId);
+              if (success) {
+                toast.success('Copied to clipboard');
+              } else {
+                toast.error('Failed to copy to clipboard');
+              }
+            }}
+            className="p-2 rounded-full dark:text-white bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600"
+          >
+            <Copy size={15} />
+          </button> */}
+        </div>
       ),
     },
   ];

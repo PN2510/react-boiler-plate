@@ -25,6 +25,7 @@ import {
 } from '../../common/react-select.styles';
 import { useCommonStore } from '../../store/useCommonStore';
 import { useTeamStore } from '../../store/useTeamStore';
+import { UserRolesQuery } from '../../types/useUserRolesStore.types';
 
 const validationSchema = yup.object().shape({
   roleId: yup.string().required('roleId is required').trim(),
@@ -49,9 +50,11 @@ const validationSchema = yup.object().shape({
   isActive: yup.boolean().default(true),
 });
 
-const AddUserRoleDialog = () => {
+type Props = { query: UserRolesQuery; skip: number; limit: number };
+
+const AddUserRoleDialog = ({ query, skip, limit }: Props) => {
   const { isDarkMode } = useCommonStore();
-  const { addUserRoles } = useUserRolesStore();
+  const { addUserRoles, fetchUserRoles } = useUserRolesStore();
   const { fetchPermissions, permissions } = usePermissionStore();
   const { fetchRoles, roles } = useRoleStore();
   const { fetchMembers } = useTeamStore();
@@ -98,6 +101,10 @@ const AddUserRoleDialog = () => {
       if (success) {
         reset();
         setIsModalOpen(false);
+
+        query.skip = skip;
+        query.limit = limit;
+        fetchUserRoles(query);
       }
     }
   };

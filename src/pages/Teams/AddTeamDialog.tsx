@@ -14,9 +14,7 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { CirclePlus } from 'lucide-react';
 import SecondaryButton from '../../my-components/SecondaryButton';
-import {
-  useState,
-} from 'react';
+import { useState } from 'react';
 import { ProjectQuery } from '../../types/useProjectStore.types';
 import { useTeamStore } from '../../store/useTeamStore';
 import {

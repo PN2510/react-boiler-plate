@@ -6,11 +6,12 @@ import { useForm } from 'react-hook-form';
 import { useLoginStore } from '../../store/useLoginStore';
 import { LockKeyhole, LockKeyholeOpen, Mail } from 'lucide-react';
 import { useState } from 'react';
+import toast from 'react-hot-toast';
 
 const loginSchema = yup
   .object({
     username: yup.string().required().email(),
-    password: yup.string().required().min(8).max(16),
+    password: yup.string().required(),
   })
   .required();
 
@@ -18,17 +19,15 @@ const SignIn = () => {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
   const { loginWithEmail } = useLoginStore();
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
+  const { register, handleSubmit } = useForm({
     resolver: yupResolver(loginSchema),
   });
   const onSubmit = async ({ username, password }: any) => {
     const success = await loginWithEmail({ username, password });
     if (success) {
       navigate('/tasks');
+    } else {
+      toast.error('Invalid credentials');
     }
   };
   return (

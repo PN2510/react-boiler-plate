@@ -2,8 +2,8 @@ import { create } from 'zustand';
 import Cookies from 'js-cookie';
 import { UsernamePasswordPayload } from '../types/useLoginStore.types';
 import API from '../common/api';
-import { AUTH_LOGIN } from '../common/endpoints';
-import { User } from '../types/user.types';
+import { AUTH_LOGIN, CHANGE_PASSWORD } from '../common/endpoints';
+import { User } from '../types/useUserStore.types';
 
 type initialAuthObjType = {
   isAuthenticated: boolean;
@@ -24,6 +24,11 @@ let initialAuthObj: initialAuthObjType = {
   permissionEntities: {},
 };
 
+type ChangePasswordPayload = {
+  oldPassword: string;
+  newPassword: string;
+};
+
 export type LoginStoreType = typeof initialAuthObj & {
   isLoading: boolean;
   setLoading: (isLoading: boolean) => void;
@@ -33,6 +38,9 @@ export type LoginStoreType = typeof initialAuthObj & {
   ) => Promise<boolean | undefined>;
   logout: () => void;
   getAuthDetails: () => boolean;
+  changePassword: (
+    data: ChangePasswordPayload,
+  ) => Promise<{ message: string; success: boolean }>;
 };
 
 export const useLoginStore = create<LoginStoreType>((set) => ({
@@ -120,5 +128,21 @@ export const useLoginStore = create<LoginStoreType>((set) => ({
       isAuthenticated,
     }));
     return isAuthenticated;
+  },
+
+  changePassword: async (data: ChangePasswordPayload) => {
+    try {
+      await API.post(CHANGE_PASSWORD, data);
+
+      return {
+        success: true,
+        message: 'Password changes successfully',
+      };
+    } catch (error) {
+      return {
+        success: false,
+        message: error?.response?.data?.message as unknown as string,
+      };
+    }
   },
 }));

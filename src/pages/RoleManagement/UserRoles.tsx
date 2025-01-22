@@ -82,7 +82,7 @@ const UserRoles = () => {
     <>
       {/* <Breadcrumb pageName="UserRoles" /> */}
       <div className="w-full max-w-full flex flex-col items-end rounded-md h-full">
-        <AddUserRoleDialog />
+        <AddUserRoleDialog limit={limit} query={query} skip={skip} />
         <Table
           name={'User roles'}
           columns={columns}
