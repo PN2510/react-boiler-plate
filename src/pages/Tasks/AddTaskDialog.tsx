@@ -30,6 +30,7 @@ import { useLoginStore } from '../../store/useLoginStore';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { User } from '../../types/useUserStore.types';
+import dayjs from 'dayjs';
 
 const validationSchema = yup.object().shape({
   drawingTitle: yup.string().required('Title is required'),
@@ -72,6 +73,7 @@ const AddTaskDialog = ({ query, skip, limit }: Props) => {
   const onSubmit = async (data: any) => {
     data.status = TaskStatus.PENDING.toUpperCase();
 
+    data.dueDate = handleDateChange(data.dueDate);
     const { projectId, ...rest } = data;
 
     const success = await addTask(projectId, rest);
@@ -133,6 +135,17 @@ const AddTaskDialog = ({ query, skip, limit }: Props) => {
     }
   }
 
+  function handleDateChange(selectedDate: string) {
+    // Convert selected date to dayjs object
+    const localDate = dayjs(selectedDate);
+
+    // Get the end of the day (23:59:59.999)
+    const endOfDay = localDate.endOf('day');
+
+    return endOfDay.toISOString();
+
+    // console.log('End of day (local):', endOfDay.format()); // Logs: End of day in local time
+  }
   return (
     <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
       {renderWithAccessControl(

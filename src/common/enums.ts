@@ -165,6 +165,7 @@ export enum RolesEnum {
   'DIRECTOR' = 'DIRECTOR',
   'DRAUGHTSMAN' = 'DRAUGHTSMAN',
   'ARCHITECT' = 'ARCHITECT',
+  'INTERN' = 'INTERN',
 }
 
 export const EMAIL_REGEXP =
@@ -175,4 +176,5 @@ export enum ROLES {
   'DRAUGHTSMAN' = 'DRAUGHTSMAN',
   'ARCHITECT' = 'ARCHITECT',
   'TEAM_LEAD' = 'TEAM_LEAD',
+  'INTERN' = 'INTERN',
 }

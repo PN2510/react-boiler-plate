@@ -58,12 +58,10 @@ const TaskFilters = ({ setQuery, query }: TaskFiltersPropType) => {
                 }
               }}
             >
-              <option value="" disabled className="text-sm">
+              <option value="RESET" className="text-sm">
                 Select Priority
               </option>
-              <option value="RESET" className="text-xs text-red-400 bg-red-100">
-                Reset &#10006;
-              </option>
+
               {Object.entries(TaskPriority).map(([key, priority]) => (
                 <option key={key} value={key}>
                   {priority}
@@ -76,7 +74,6 @@ const TaskFilters = ({ setQuery, query }: TaskFiltersPropType) => {
             <p>Status:</p>
             <select
               id="status"
-              defaultValue=""
               value={query.status ? query.status[0] : ''}
               className="py-1 px-2 rounded-md border-2 border-slate-300 dark:border-slate-600 bg-transparent dark:bg-slate-900"
               onChange={(e) => {
@@ -92,11 +89,8 @@ const TaskFilters = ({ setQuery, query }: TaskFiltersPropType) => {
                 }
               }}
             >
-              <option value="" disabled className="text-sm">
+              <option value="RESET" className="text-sm">
                 Select Status
-              </option>
-              <option value="RESET" className="text-xs text-red-400 bg-red-100">
-                Reset &#10006;
               </option>
               {Object.entries(TaskStatus)?.map(([key, status]) => (
                 <option key={key} value={key}>
@@ -113,7 +107,6 @@ const TaskFilters = ({ setQuery, query }: TaskFiltersPropType) => {
               <p>Projects:</p>
               <select
                 id="projects"
-                defaultValue=""
                 value={query.projectId ? query.projectId[0] : ''}
                 className="py-1 px-2 rounded-md border-2 border-slate-300 dark:border-slate-600 bg-transparent dark:bg-slate-900"
                 onChange={(e) => {
@@ -129,15 +122,10 @@ const TaskFilters = ({ setQuery, query }: TaskFiltersPropType) => {
                   }
                 }}
               >
-                <option value="" disabled className="text-sm">
+                <option value="RESET" className="text-sm">
                   Select Project
                 </option>
-                <option
-                  value="RESET"
-                  className="text-xs text-red-400 bg-red-100"
-                >
-                  Reset &#10006;
-                </option>
+
                 {projects?.data?.map((project) => (
                   <option key={project?.projectId} value={project?.projectId}>
                     {project?.name}

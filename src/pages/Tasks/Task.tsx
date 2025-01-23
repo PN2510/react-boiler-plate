@@ -163,14 +163,23 @@ const Task = () => {
             value={taskStatus}
             onValueChange={(value: string) => {
               const isSelectOptionCompletedDisabled =
-                [RolesEnum.ARCHITECT, RolesEnum.DRAUGHTSMAN].includes(
-                  authenticatedUserRoleId as RolesEnum,
-                ) && ['COMPLETED', 'REJECTED', 'ON_HOLD'].includes(value);
+                [
+                  RolesEnum.ARCHITECT,
+                  RolesEnum.DRAUGHTSMAN,
+                  RolesEnum.INTERN,
+                ].includes(authenticatedUserRoleId as RolesEnum) &&
+                [
+                  'COMPLETED',
+                  'REJECTED',
+                  //  'ON_HOLD'
+                ].includes(value);
 
               const isSelectOptionsDisabled =
-                [RolesEnum.ARCHITECT, RolesEnum.DRAUGHTSMAN].includes(
-                  authenticatedUserRoleId as RolesEnum,
-                ) &&
+                [
+                  RolesEnum.ARCHITECT,
+                  RolesEnum.DRAUGHTSMAN,
+                  RolesEnum.INTERN,
+                ].includes(authenticatedUserRoleId as RolesEnum) &&
                 TaskStatus[task.status as keyof typeof TaskStatus] ===
                   TaskStatus.COMPLETED;
 

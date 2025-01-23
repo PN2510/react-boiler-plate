@@ -31,7 +31,7 @@ function App() {
         navigate('/tasks');
       }
     } else {
-      if (location.pathname && !isAuthRoute) {
+      if (location.pathname && location.pathname !== '/' && !isAuthRoute) {
         navigate(location.pathname);
       } else {
         navigate('/tasks');
