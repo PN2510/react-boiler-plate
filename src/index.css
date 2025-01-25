@@ -196,7 +196,7 @@ span.flatpickr-weekday,
   background-image: url(./images/icon/icon-arrow-down.svg);
 }
 .react-datepicker-popper {
-  z-index: 4;
+  z-index: 2 !important;
 }
 [x-cloak] {
   display: none !important;

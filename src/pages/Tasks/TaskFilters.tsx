@@ -1,4 +1,3 @@
-import { CircleX, X } from 'lucide-react';
 import { ROLES, TaskPriority, TaskStatus } from '../../common/enums';
 import {
   Accordion,
@@ -9,7 +8,10 @@ import {
 import { useLoginStore } from '../../store/useLoginStore';
 import { useProjectStore } from '../../store/useProjectStore';
 import { TaskQuery } from '../../types/useTasksStore.types';
-import DateFilter from './DateFilter';
+import 'react-datepicker/dist/react-datepicker.css';
+import DatePicker from 'react-datepicker';
+import { useState } from 'react';
+import dayjs from 'dayjs';
 
 type TaskFiltersPropType = {
   query: TaskQuery;
@@ -19,15 +21,32 @@ type TaskFiltersPropType = {
 const TaskFilters = ({ setQuery, query }: TaskFiltersPropType) => {
   const { authenticatedUserRoleId } = useLoginStore();
   const { projects } = useProjectStore();
+  const [startDate, setStartDate] = useState();
+  const [endDate, setEndDate] = useState();
 
-  const handleFilterChange = ({ date, month, year }) => {
-    console.log('handleFilterChange', { date, month, year });
-    // setQuery({
-    //   ...query,
-    //   date,
-    //   month,
-    //   year,
-    // });
+  const onChange = (dates: any) => {
+    const [start, end] = dates;
+    console.log('🚀 ~ onChange ~ end:', end);
+    console.log('🚀 ~ onChange ~ start:', start);
+    setStartDate(start);
+    setEndDate(end);
+
+    setQuery({
+      ...query,
+      createdAt: {
+        startDate: handleDate(start, 'start'),
+        endDate: handleDate(end, 'end'),
+      },
+    });
+  };
+
+  const handleDate = (date: string, type: 'start' | 'end') => {
+    const localDate = dayjs(date);
+    if (type === 'end') {
+      return localDate.endOf('day').toISOString();
+    } else {
+      return localDate.startOf('day').toISOString();
+    }
   };
 
   return (
@@ -134,9 +153,20 @@ const TaskFilters = ({ setQuery, query }: TaskFiltersPropType) => {
               </select>
             </label>
           )}
-
+          <label htmlFor="status" className="text-sm ">
+            <p>Date:</p>
+            <DatePicker
+              selected={startDate}
+              onChange={onChange}
+              startDate={startDate}
+              endDate={endDate}
+              selectsRange
+              placeholderText="Select a date"
+              className="py-1 px-2 rounded-md border-2 border-slate-300 dark:border-slate-600 bg-transparent dark:bg-slate-900 placeholder:text-slate-500"
+            />
+          </label>
           {/* {[ROLES.DIRECTOR].includes(authenticatedUserRoleId as ROLES) && (
-            <DateFilter onFilterChange={handleFilterChange} />
+            
           )} */}
         </AccordionContent>
       </AccordionItem>

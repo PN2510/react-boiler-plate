@@ -64,6 +64,7 @@ export interface TaskQuery extends Query {
   projectId?: string[];
   priority?: string[];
   status?: string[];
+  createdAt?: { startDate?: string; endDate?: string };
 }
 
 export interface TaskActionQuery extends Query {
@@ -91,6 +92,6 @@ export interface TaskStoreType {
     taskId: string,
     projectId: string,
     payload: object,
-    isSingleTask?:boolean
+    isSingleTask?: boolean,
   ) => Promise<boolean | undefined>;
 }

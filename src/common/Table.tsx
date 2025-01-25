@@ -62,7 +62,7 @@ function Table<T>(props: TableType<T>) {
       <div className="overflow-auto max-h-[65vh] scrollbar">
         <table className="border-collapse w-full min-w-full">
           <thead className="border">
-            <tr className="sticky top-0 text-sm z-[1]">
+            <tr className="sticky top-0 text-sm" style={{ zIndex: 1 }}>
               {columns?.map((column: ColumnDef, columnIndex: number, array) => (
                 <TableHeader
                   {...column}
