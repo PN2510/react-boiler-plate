@@ -26,10 +26,13 @@ import {
 } from '../../my-components/Tooltip';
 import TaskLabelWrapper from './TaskLabelWrapper';
 import TaskFilters from './TaskFilters';
+import { useTeamStore } from '../../store/useTeamStore';
+import dayjs from 'dayjs';
 const Tasks = () => {
   const { authenticatedUserRoleId, user } = useLoginStore();
   const { fetchTasks, tasks, performTaskAction } = useTaskStore();
   const { fetchProjects } = useProjectStore();
+  const { fetchTeams } = useTeamStore();
   const [skip, setSkip] = useState(0);
   const [limit, setLimit] = useState(10);
 
@@ -39,14 +42,7 @@ const Tasks = () => {
     relation: true,
     accessLevel: true,
     priority: undefined,
-    status:
-      ![ROLES.DRAUGHTSMAN, ROLES.ARCHITECT].includes(
-        authenticatedUserRoleId as ROLES,
-      ) && authenticatedUserRoleId !== ROLES.DIRECTOR
-        ? Object.keys(TaskStatus).filter(
-            (status) => !['IN_REVIEW', 'COMPLETED'].includes(status),
-          )
-        : undefined,
+    status: getInitialStatusFilterArray(authenticatedUserRoleId),
   });
 
   useEffect(() => {
@@ -183,7 +179,12 @@ const Tasks = () => {
       key: 'createdBy',
       label: 'Created By',
       type: 'element',
-      render: (row) => <span>{row?.createdBy?.name}</span>,
+      render: (row) => (
+        <div>
+          <p> {row?.createdBy?.name}</p>
+          <p>on: {dayjs(row?.createdAt).format('DD/MM/YYYY hh:mm a')}</p>
+        </div>
+      ),
     },
     {
       key: 'Action',
@@ -257,23 +258,13 @@ const Tasks = () => {
     },
   ];
 
-  const initialOptions = [
-    { value: '1', label: 'Option 1' },
-    { value: '2', label: 'Option 2' },
-    { value: '3', label: 'Option 3' },
-    { value: '4', label: 'Option 4' },
-    { value: '5', label: 'Option 5' },
-  ];
-
-  const loadMoreOptions = async () => {
-    // Simulating an API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    return [
-      { value: '6', label: 'Option 6' },
-      { value: '7', label: 'Option 7' },
-      { value: '8', label: 'Option 8' },
-    ];
-  };
+  useEffect(() => {
+    fetchTeams({
+      paginate: false,
+      isActive: true,
+      relation: true,
+    });
+  }, []);
 
   return (
     <>
@@ -315,3 +306,29 @@ const Tasks = () => {
   );
 };
 export default Tasks;
+
+export function getInitialStatusFilterArray(role: string) {
+  switch (role) {
+    case ROLES.DIRECTOR:
+      return Object.keys(TaskStatus).filter(
+        (status) => !['COMPLETED'].includes(status),
+      );
+    case ROLES.TEAM_LEAD:
+      return Object.keys(TaskStatus).filter(
+        (status) => !['COMPLETED', 'IN_REVIEW'].includes(status),
+      );
+    case ROLES.ASSISTANT_TEAM_LEAD:
+      return Object.keys(TaskStatus).filter(
+        (status) => !['COMPLETED', 'IN_REVIEW'].includes(status),
+      );
+    case ROLES.ARCHITECT:
+      return Object.keys(TaskStatus).map((status) => status);
+    case ROLES.DRAUGHTSMAN:
+      return Object.keys(TaskStatus).map((status) => status);
+    case ROLES.INTERN:
+      return Object.keys(TaskStatus).map((status) => status);
+
+    default:
+      return undefined;
+  }
+}

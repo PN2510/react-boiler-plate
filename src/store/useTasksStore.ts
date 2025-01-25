@@ -73,30 +73,30 @@ export const useTaskStore = create<TaskStoreType>((set, get) => ({
       );
       set({ task: res.data });
     } catch (error) {
-      console.log('fetchTaskByTaskId: ~ error:', error);
+      // console.log('fetchTaskByTaskId: ~ error:', error);
     }
   },
   performTaskAction: async (
     taskId: string,
     projectId: string,
-    payload: object, 
-    isSingleTask: boolean=true
+    payload: object,
+    isSingleTask: boolean = true,
   ) => {
     try {
       const res = await API.patch(
         replaceUrlParams(`${TASKS}/:taskId`, { taskId, projectId }),
         payload,
       );
-      if(isSingleTask){
+      if (isSingleTask) {
         get().fetchTaskByTaskId(taskId);
       }
-      if(res.status == 200){
-        return true
+      if (res.status == 200) {
+        return true;
       }
-      return false
+      return false;
     } catch (error) {
-      console.log('fetchTaskByTaskId: ~ error:', error);
-      return false
+      // console.log('fetchTaskByTaskId: ~ error:', error);
+      return false;
     }
   },
 }));

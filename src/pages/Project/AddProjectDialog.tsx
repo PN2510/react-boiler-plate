@@ -37,6 +37,7 @@ const validationSchema = yup.object().shape({
   name: yup.string().required('title is required'),
   projectCode: yup.string().required('Project code is required'),
   clientName: yup.string().required('Client name is required'),
+  constructionArea: yup.string().required('Construction Area is required'),
   clientEmailId: yup
     .string()
     .test('is-valid-emails', 'Invalid client email provided', (value) => {
@@ -91,8 +92,6 @@ const AddProjectDialog = ({ limit, query, skip }: Props) => {
   const onSubmit = async (data: any) => {
     data.status = ProjectStatus.NEW.toUpperCase();
     data.teamLeadId = data.teamLeadId.value;
-
-    console.log('-------------PROJECT DATA', data);
     const success = await addProject(data);
 
     if (success) {
@@ -199,6 +198,17 @@ const AddProjectDialog = ({ limit, query, skip }: Props) => {
               />
               <p className="text-red-500 text-[9px]">
                 {errors?.location?.message}
+              </p>
+            </div>
+            <div className="flex flex-col">
+              <label className="text-xs">Project construction area:</label>
+              <input
+                className="px-2 py-2.5 rounded-md border-2 border-slate-300 dark:border-slate-600 bg-transparent"
+                {...register('constructionArea')}
+                placeholder="Enter Project construction area"
+              />
+              <p className="text-red-500 text-[9px]">
+                {errors?.constructionArea?.message}
               </p>
             </div>
           </div>

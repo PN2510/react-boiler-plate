@@ -12,6 +12,8 @@ import 'react-datepicker/dist/react-datepicker.css';
 import DatePicker from 'react-datepicker';
 import { useState } from 'react';
 import dayjs from 'dayjs';
+import { useTeamStore } from '../../store/useTeamStore';
+import { getInitialStatusFilterArray } from './Tasks';
 
 type TaskFiltersPropType = {
   query: TaskQuery;
@@ -21,13 +23,12 @@ type TaskFiltersPropType = {
 const TaskFilters = ({ setQuery, query }: TaskFiltersPropType) => {
   const { authenticatedUserRoleId } = useLoginStore();
   const { projects } = useProjectStore();
+  const { teams } = useTeamStore();
   const [startDate, setStartDate] = useState();
   const [endDate, setEndDate] = useState();
 
   const onChange = (dates: any) => {
     const [start, end] = dates;
-    console.log('🚀 ~ onChange ~ end:', end);
-    console.log('🚀 ~ onChange ~ start:', start);
     setStartDate(start);
     setEndDate(end);
 
@@ -93,12 +94,21 @@ const TaskFilters = ({ setQuery, query }: TaskFiltersPropType) => {
             <p>Status:</p>
             <select
               id="status"
-              value={query.status ? query.status[0] : ''}
+              value={
+                query.status && query.status?.length == 1
+                  ? query.status[0]
+                  : 'RESET'
+              }
               className="py-1 px-2 rounded-md border-2 border-slate-300 dark:border-slate-600 bg-transparent dark:bg-slate-900"
               onChange={(e) => {
                 if (e?.target?.value) {
                   if (e.target.value === 'RESET') {
-                    setQuery({ ...query, status: undefined });
+                    setQuery({
+                      ...query,
+                      status: getInitialStatusFilterArray(
+                        authenticatedUserRoleId,
+                      ),
+                    });
                   } else {
                     setQuery({
                       ...query,
@@ -165,9 +175,37 @@ const TaskFilters = ({ setQuery, query }: TaskFiltersPropType) => {
               className="py-1 px-2 rounded-md border-2 border-slate-300 dark:border-slate-600 bg-transparent dark:bg-slate-900 placeholder:text-slate-500"
             />
           </label>
-          {/* {[ROLES.DIRECTOR].includes(authenticatedUserRoleId as ROLES) && (
-            
-          )} */}
+          {[ROLES.DIRECTOR].includes(authenticatedUserRoleId as ROLES) && (
+            <label htmlFor="team" className="text-sm">
+              <p>Team:</p>
+              <select
+                id="team"
+                value={query.teamId ? query.teamId[0] : ''}
+                className="py-1 px-2 rounded-md border-2 border-slate-300 dark:border-slate-600 bg-transparent dark:bg-slate-900"
+                onChange={(e) => {
+                  if (e?.target?.value) {
+                    if (e.target.value === 'RESET') {
+                      setQuery({ ...query, teamId: undefined });
+                    } else {
+                      setQuery({
+                        ...query,
+                        teamId: [e.target.value],
+                      });
+                    }
+                  }
+                }}
+              >
+                <option value="RESET" className="text-sm">
+                  Select Team
+                </option>
+                {teams?.data?.map((team) => (
+                  <option key={team.id} value={team.id}>
+                    {team.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+          )}
         </AccordionContent>
       </AccordionItem>
     </Accordion>

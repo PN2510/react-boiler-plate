@@ -2,9 +2,10 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useState } from 'react';
-import { LockKeyhole, LockKeyholeOpen } from 'lucide-react';
+import { KeySquare, LockKeyhole, LockKeyholeOpen } from 'lucide-react';
 import { useLoginStore } from '../store/useLoginStore';
 import toast from 'react-hot-toast';
+import SecondaryButton from '../my-components/SecondaryButton';
 
 const schema = yup.object().shape({
   oldPassword: yup
@@ -50,78 +51,77 @@ const Settings = () => {
 
   return (
     <div className="w-full max-w-full flex flex-col rounded-md h-full">
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-3 pb-4 border-b-2 border-slate-200">
         <span className="text-sm font-semibold dark:text-white">
           Change Password:
         </span>
 
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="flex flex-col md:flex-row gap-2 items-end"
-        >
-          {/* Old Password */}
-          <div className="flex flex-col">
-            <label className="text-xs">Old Password:</label>
-            <input
-              type="password"
-              className="px-2 py-1.5 rounded-md border-2 border-slate-300 dark:border-slate-600 bg-transparent placeholder:text-xs"
-              {...register('oldPassword')}
-              placeholder="Enter your old password"
-            />
-            <p className="text-red-500 text-[9px]">
-              {errors.oldPassword?.message}
-            </p>
-          </div>
-
-          {/* New Password */}
-          <div className="flex flex-col">
-            <label className="text-xs">New Password:</label>
-            <div className="relative">
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-2">
+          <div className="flex flex-col md:flex-row gap-2">
+            {/* Old Password */}
+            <div className="flex flex-col">
+              <label className="text-xs">Old Password:</label>
               <input
-                type={!showPassword ? 'password' : 'text'}
-                className="px-2 py-1.5 w-full rounded-md border-2 border-slate-300 dark:border-slate-600 bg-transparent placeholder:text-xs"
-                {...register('newPassword')}
-                placeholder="Enter your new password"
+                type="password"
+                className="px-2 py-1.5 rounded-md border-2 border-slate-300 dark:border-slate-600 bg-transparent placeholder:text-xs"
+                {...register('oldPassword')}
+                placeholder="Enter your old password"
               />
-
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-4 top-1/2 -translate-y-1/2"
-              >
-                {showPassword ? (
-                  <LockKeyhole className="text-slate-400 cursor-pointer" />
-                ) : (
-                  <LockKeyholeOpen className="text-slate-400 cursor-pointer" />
-                )}
-              </button>
+              <p className="text-red-500 text-[9px]">
+                {errors.oldPassword?.message}
+              </p>
             </div>
-            <p className="text-red-500 text-[9px]">
-              {errors.newPassword?.message}
-            </p>
-          </div>
 
-          {/* Confirm Password */}
-          <div className="flex flex-col">
-            <label className="text-xs">Confirm Password:</label>
-            <input
-              type="password"
-              className="px-2 py-1.5 rounded-md border-2 border-slate-300 dark:border-slate-600 bg-transparent placeholder:text-xs"
-              {...register('confirmPassword')}
-              placeholder="Re-enter your new password"
-            />
-            <p className="text-red-500 text-[9px]">
-              {errors.confirmPassword?.message}
-            </p>
+            {/* New Password */}
+            <div className="flex flex-col">
+              <label className="text-xs">New Password:</label>
+              <div className="relative">
+                <input
+                  type={!showPassword ? 'password' : 'text'}
+                  className="px-2 py-1.5 w-full rounded-md border-2 border-slate-300 dark:border-slate-600 bg-transparent placeholder:text-xs"
+                  {...register('newPassword')}
+                  placeholder="Enter your new password"
+                />
+
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2"
+                >
+                  {showPassword ? (
+                    <LockKeyhole className="text-slate-400 cursor-pointer" />
+                  ) : (
+                    <LockKeyholeOpen className="text-slate-400 cursor-pointer" />
+                  )}
+                </button>
+              </div>
+              <p className="text-red-500 text-[9px]">
+                {errors.newPassword?.message}
+              </p>
+            </div>
+
+            {/* Confirm Password */}
+            <div className="flex flex-col">
+              <label className="text-xs">Confirm Password:</label>
+              <input
+                type="password"
+                className="px-2 py-1.5 rounded-md border-2 border-slate-300 dark:border-slate-600 bg-transparent placeholder:text-xs"
+                {...register('confirmPassword')}
+                placeholder="Re-enter your new password"
+              />
+              <p className="text-red-500 text-[9px]">
+                {errors.confirmPassword?.message}
+              </p>
+            </div>
           </div>
 
           {/* Submit Button */}
-          <button
+          <SecondaryButton
+            className="py-2 w-fit text-xs md:text-base"
             type="submit"
-            className="px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600"
-          >
-            Change Password
-          </button>
+            title="Change Password"
+            icon={<KeySquare size={15} />}
+          />
         </form>
       </div>
     </div>

@@ -36,6 +36,7 @@ const validationSchema = yup.object().shape({
   drawingTitle: yup.string().required('Title is required'),
   description: yup.string().max(1000, 'Maximum 1000 characters allowed'),
   projectId: yup.string().required('Project is required'),
+  teamId: yup.string().required('Team is required'),
   priority: yup
     .mixed()
     .oneOf(Object.keys(TaskPriority))
@@ -57,7 +58,7 @@ const AddTaskDialog = ({ query, skip, limit }: Props) => {
   const [taskMembers, setTaskMembers] =
     useState<{ value: string; label: string }[]>();
   const { addTask, fetchTasks } = useTaskStore();
-  const { fetchTaskMembers } = useTeamStore();
+  const { fetchTaskMembers, teams } = useTeamStore();
   const { fetchProjects, projects } = useProjectStore();
   const {
     control,
@@ -107,32 +108,16 @@ const AddTaskDialog = ({ query, skip, limit }: Props) => {
       relation: true,
       projectId: '*',
     };
-    if (
-      [ROLES.ARCHITECT, ROLES.DRAUGHTSMAN].includes(
-        authenticatedUserRoleId as ROLES,
-      )
-    ) {
-      setTaskMembers([
-        {
-          value: user?.userId!,
-          label: `${user?.name} (${authenticatedUserRoleId
-            .toLowerCase()
-            .replace(/^[a-z]/, (char) => char.toUpperCase())
-            .replaceAll(/_/g, ' ')})`,
-        },
-      ]);
-    } else {
-      const data = await fetchTaskMembers(query);
-      setTaskMembers(
-        data.data.map((option: User & { role?: string }) => {
-          const role = option?.['role'];
-          return {
-            value: option.userId,
-            label: `${option?.['name']} ${role ? `(${role})` : ''}`,
-          };
-        }),
-      );
-    }
+    const data = await fetchTaskMembers(query);
+    setTaskMembers(
+      data.data.map((option: User & { role?: string }) => {
+        const role = option?.['role'];
+        return {
+          value: option.userId,
+          label: `${option?.['name']} ${role ? `(${role})` : ''}`,
+        };
+      }),
+    );
   }
 
   function handleDateChange(selectedDate: string) {
@@ -288,7 +273,7 @@ const AddTaskDialog = ({ query, skip, limit }: Props) => {
                 <DatePicker
                   autoComplete="false"
                   placeholderText="Select start date"
-                  className="w-full px-2 py-2.5 rounded-md border-2 border-slate-300 dark:border-slate-600 bg-transparent"
+                  className="w-full px-2 py-[11px] rounded-md border-2 border-slate-300 dark:border-slate-600 bg-transparent"
                   {...field}
                   minDate={new Date()}
                   selected={field.value ? new Date(field.value) : null}
@@ -301,7 +286,36 @@ const AddTaskDialog = ({ query, skip, limit }: Props) => {
               {errors?.dueDate?.message}
             </p>
           </div>
+          <div className="flex flex-col">
+            <label className="text-xs">Team:</label>
 
+            <Controller
+              name="teamId"
+              control={control}
+              render={({ field }) => (
+                <select
+                  {...field}
+                  defaultValue=""
+                  placeholder="Select Team"
+                  className="py-2.5 px-2 rounded-md border-2 border-slate-300 dark:border-slate-600 bg-transparent dark:bg-slate-900"
+                >
+                  <option
+                    value=""
+                    disabled
+                    className="text-slate-500"
+                  >
+                    Select Team
+                  </option>
+                  {teams?.data?.map((team) => (
+                    <option key={team.id} value={team.id}>
+                      {team.name}
+                    </option>
+                  ))}
+                </select>
+              )}
+            />
+            <p className="text-red-500 text-[9px]">{errors?.teamId?.message}</p>
+          </div>
           <button
             type="submit"
             className="col-span-2 p-2 my-2 block bg-primary hover:bg-primary/90 rounded-md text-white"

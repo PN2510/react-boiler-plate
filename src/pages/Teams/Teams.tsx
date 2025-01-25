@@ -6,7 +6,7 @@ import AddTeamDialog from './AddTeamDialog';
 import dayjs from 'dayjs';
 
 const Teams = () => {
-  const { fetchTeams, teams, showMembers } = useTeamStore();
+  const { fetchTeams, teams } = useTeamStore();
   const [skip, setSkip] = useState(0);
   const [limit, setLimit] = useState(10);
   const [query, _setQuery] = useState<TeamQuery>({
@@ -31,33 +31,6 @@ const Teams = () => {
     //   type: 'element',
     //   render: (row) => <p className="max-w-[200px]">{row?.project?.name}</p>,
     // },
-    {
-      key: 'members',
-      label: 'Members',
-      type: 'element',
-      render: (row) => (
-        <div className="flex flex-col items-start">
-          {row?.members?.length && !row?.membersData ? (
-            <button
-              onClick={() => showMembers(row.id)}
-              className="bg-slate-300 px-2 py-0.5 rounded-md text-black hover:bg-slate-200 dark:bg-black dark:text-white hover:dark:bg-slate-800"
-            >
-              Show Members
-            </button>
-          ) : (
-            row?.membersData?.map((m) => (
-              <span
-                key={m.userId}
-                className="py-0.5 px-2 my-0.5 bg-white dark:bg-slate-900/50 rounded-md"
-              >
-                {m.name} ({m.email})
-              </span>
-            ))
-          )}
-        </div>
-        // <p className="max-w-[200px]">{JSON.stringify(row?.members)}</p>
-      ),
-    },
     {
       key: 'teamLeadId',
       label: 'Team lead',

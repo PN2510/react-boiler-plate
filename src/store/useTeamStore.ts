@@ -89,24 +89,4 @@ export const useTeamStore = create<TeamStoreType>((set, get) => ({
       return { data: [], limit: query.limit, skip: query.skip, total: 0 };
     }
   },
-  showMembers: async (teamId: string) => {
-    try {
-      const res = await API.get(
-        replaceUrlParams(`${TEAMS}/:teamId/members`, { teamId }),
-      );
-      const currentTeams = get().teams;
-      const newTeams = currentTeams.data.map((t) =>
-        t.id == teamId
-          ? {
-              ...t,
-              membersData: res.data?.data,
-            }
-          : t,
-      );
-      currentTeams.data = newTeams;
-      set({ teams: currentTeams });
-    } catch (error) {
-      // console.log('fetchTeams: ~ error:', error);
-    }
-  },
 }));

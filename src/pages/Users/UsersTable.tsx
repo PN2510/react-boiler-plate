@@ -42,7 +42,7 @@ const UsersTable = () => {
               {row?.createdBy?.name} <br /> ({row?.createdBy?.email})
             </span>
           ) : (
-            <span> Self </span>
+            <span> You </span>
           )}
         </>
       ),

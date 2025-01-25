@@ -16,6 +16,7 @@ export type Project = {
   projectCode: string;
   clientName: string;
   clientEmailId?: string;
+  constructionArea: string;
   location: string;
   teamLeadId: string;
   teamLead?: {

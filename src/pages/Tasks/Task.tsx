@@ -46,7 +46,6 @@ const Task = () => {
   }
 
   const handleComment = () => {
-    console.log('taskComment', taskComment);
 
     const payload = {
       action: {
@@ -325,7 +324,6 @@ import TaskStatusHistory from './TaskStatusHistory';
 import { useLoginStore } from '../../store/useLoginStore';
 import { ConvertEditable } from '../../my-components/ConvertEditable';
 import toast from 'react-hot-toast';
-import TaskLabelWrapper from './TaskLabelWrapper';
 
 export const TaskMetaInformation = ({
   task,
@@ -454,6 +452,9 @@ export const TaskMetaInformation = ({
 
           <span>Reporter</span>
           <span className="col-span-2">{task?.createdBy?.name}</span>
+
+          <span>Team</span>
+          <span className="col-span-2">{task?.team?.name}</span>
           {isDelayed && (
             <>
               <span>Delayed by</span>

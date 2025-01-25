@@ -35,6 +35,10 @@ export type Task = {
   project?: Project;
   history?: HistoryEvent[];
   dueDate: string;
+  teamId: string;
+  team?: {
+    name?: string;
+  };
 };
 
 export type AssignedTo = {
@@ -64,6 +68,7 @@ export interface TaskQuery extends Query {
   projectId?: string[];
   priority?: string[];
   status?: string[];
+  teamId?: string[];
   createdAt?: { startDate?: string; endDate?: string };
 }
 

@@ -38,8 +38,15 @@ const Project = () => {
     },
     {
       key: 'name',
-      label: 'Project',
-      type: 'text',
+      label: 'Project/Project Code',
+      type: 'element',
+      render: (row) => (
+        <div>
+          <p>
+            {row?.name} ({row?.projectCode})
+          </p>
+        </div>
+      ),
     },
     {
       key: 'clientName',
@@ -68,16 +75,18 @@ const Project = () => {
       type: 'element',
       render: (row) => <p className="max-w-[200px]">{row?.location}</p>,
     },
+    // {
+    //   key: 'teamLead',
+    //   label: 'Project Lead',
+    //   type: 'element',
+    //   render: (row) => <p className="max-w-[200px]">{row?.teamLead?.name}</p>,
+    // },
     {
       key: 'category',
       label: 'Category',
       type: 'text',
     },
-    {
-      key: 'projectCode',
-      label: 'Project Code',
-      type: 'text',
-    },
+
     // {
     //   key: 'priority',
     //   label: 'Priority',
