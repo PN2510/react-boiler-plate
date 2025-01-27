@@ -6,39 +6,33 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '../../my-components/Modal';
-import AsyncSelect from 'react-select/async';
 
 import 'react-datepicker/dist/react-datepicker.css';
-import { Controller, useForm } from 'react-hook-form';
+import {  useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { CirclePlus } from 'lucide-react';
 import SecondaryButton from '../../my-components/SecondaryButton';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ProjectQuery } from '../../types/useProjectStore.types';
 import { useTeamStore } from '../../store/useTeamStore';
-import {
-  darkModeStyles,
-  lightModeStyles,
-} from '../../common/react-select.styles';
-import { useCommonStore } from '../../store/useCommonStore';
 import { UserRolesQuery } from '../../types/useUserRolesStore.types';
 
 const validationSchema = yup.object().shape({
   name: yup.string().required('Team name is required'),
-  teamLeadId: yup
-    .object()
-    .typeError('Team lead is required')
-    .required('Team lead is required'),
+  teamLeadId: yup.string().required('Team lead is required'),
 });
 
 type Props = { query: ProjectQuery; skip: number; limit: number };
 
 const AddProjectDialog = ({ query, skip, limit }: Props) => {
-  const { isDarkMode } = useCommonStore();
   const { fetchTeamLeads, addTeam, fetchTeams } = useTeamStore();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [teamLeads, setTeamLeads] = useState<
+    { value: string; label: string }[]
+  >([]);
+
   const {
-    control,
     register,
     handleSubmit,
     reset,
@@ -49,9 +43,6 @@ const AddProjectDialog = ({ query, skip, limit }: Props) => {
   });
 
   const onSubmit = async (data: any) => {
-    const { teamLeadId } = data;
-    data.teamLeadId = teamLeadId.value;
-
     const success = await addTeam(data);
     if (success) {
       reset();
@@ -63,9 +54,7 @@ const AddProjectDialog = ({ query, skip, limit }: Props) => {
     }
   };
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const loadTeamLeadsOptions = async (_inputValue: string = '') => {
+  const loadTeamLeadsOptions = async () => {
     const query: UserRolesQuery = {
       paginate: false,
       roleId: ['TEAM_LEAD'],
@@ -76,10 +65,19 @@ const AddProjectDialog = ({ query, skip, limit }: Props) => {
       value: option.userId,
       label: `${option?.user?.name} ( ${option?.user?.email} )`,
     }));
-
+    setTeamLeads(formattedOptions);
     return formattedOptions;
   };
 
+  useEffect(() => {
+    if (isModalOpen) {
+      loadTeamLeadsOptions();
+    }
+
+    return () => {
+      setTeamLeads([]);
+    };
+  }, [isModalOpen]);
 
   return (
     <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
@@ -105,7 +103,7 @@ const AddProjectDialog = ({ query, skip, limit }: Props) => {
 
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="overflow-y-auto h-fit max-h-[calc(100vh-30%)] scrollbar md:px-5 flex flex-col gap-2 text-xs"
+          className="overflow-y-auto min-h-fit max-h-[calc(100vh-30%)] scrollbar md:px-5 flex flex-col gap-2 text-xs"
         >
           <div className="flex flex-col">
             <label className="text-xs">Team Name:</label>
@@ -140,30 +138,22 @@ const AddProjectDialog = ({ query, skip, limit }: Props) => {
               {errors?.projectId?.message}
             </p>
           </div> */}
-
           <div className="flex flex-col">
             <label className="text-xs">Team Lead:</label>
-            <Controller
-              name="teamLeadId"
-              control={control}
-              render={({ field }) => (
-                <AsyncSelect
-                  {...field}
-                  cacheOptions
-                  defaultOptions
-                  loadOptions={loadTeamLeadsOptions as any}
-                  styles={isDarkMode ? darkModeStyles : lightModeStyles}
-                  placeholder={
-                    <span className="text-slate-500">Select team lead</span>
-                  }
-                  className="react-select-container"
-                  classNamePrefix="react-select"
-                  onChange={(selected) => {
-                    field.onChange(selected);
-                  }}
-                />
-              )}
-            />
+            <select
+              {...register('teamLeadId')}
+              className="px-2 py-2 border-2 border-slate-300 dark:border-slate-600 bg-transparent rounded-md placeholder:text-slate-400"
+            >
+              <option value="" disabled>
+                Select team lead
+              </option>
+
+              {teamLeads?.map(({ value, label }) => (
+                <option key={value} value={value}>
+                  {label}
+                </option>
+              ))}
+            </select>
             <p className="text-red-500 text-[9px]">
               {errors?.teamLeadId?.message}
             </p>

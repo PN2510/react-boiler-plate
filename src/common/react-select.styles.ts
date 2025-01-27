@@ -13,7 +13,12 @@ export const lightModeStyles = {
     ...provided,
     backgroundColor: 'white',
     color: 'black',
-    zIndex: 10,
+  }),
+  menuList: (provided) => ({
+    ...provided,
+    backgroundColor: 'white',
+    color: 'black',
+    zIndex: 20,
   }),
   option: (provided, { isFocused }) => ({
     ...provided,
@@ -59,7 +64,7 @@ export const darkModeStyles = {
     ...provided,
     backgroundColor: 'rgb(31 41 55)', // Tailwind gray-800
     color: 'white',
-    zIndex: 10,
+    zIndex: 14,
   }),
   option: (provided, { isFocused }) => ({
     ...provided,
