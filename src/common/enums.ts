@@ -158,6 +158,7 @@ export enum TaskEvents {
   'COMMENT' = 'COMMENT',
   'PRIORITY_CHANGE' = 'PRIORITY_CHANGE',
   'ASSIGNEE_CHANGE' = 'ASSIGNEE_CHANGE',
+  'DUE_DATE_CHANGE' = 'DUE_DATE_CHANGE',
 }
 
 export enum RolesEnum {

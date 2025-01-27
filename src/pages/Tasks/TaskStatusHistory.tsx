@@ -1,4 +1,9 @@
-import { ArrowRightCircle, MessageCircle } from 'lucide-react';
+import {
+  ArrowRight,
+  ArrowRightCircle,
+  Hourglass,
+  MessageCircle,
+} from 'lucide-react';
 import dayjs from 'dayjs';
 import {
   TaskEvents,
@@ -54,6 +59,8 @@ function getEventComponent(event: HistoryEvent) {
       return <PriorityChangeEvent event={event} />;
     case TaskEvents.COMMENT:
       return <CommentEvent event={event} />;
+    case TaskEvents.DUE_DATE_CHANGE:
+      return <DueDateChanged event={event} />;
     default:
       return null;
   }
@@ -67,13 +74,18 @@ function getEventIcon(event: HistoryEvent) {
       };
     case TaskEvents.PRIORITY_CHANGE:
       return {
-        bg: 'bg-blue-500',
+        bg: 'bg-violet-500',
         icon: <ArrowRightCircle className="w-4 h-4" />,
       };
     case TaskEvents.COMMENT:
       return {
         bg: 'bg-green-500',
         icon: <MessageCircle className="w-4 h-4" />,
+      };
+    case TaskEvents.DUE_DATE_CHANGE:
+      return {
+        bg: 'bg-yellow-500',
+        icon: <Hourglass className="w-4 h-4" />,
       };
     default:
       return null;
@@ -183,7 +195,15 @@ function CommentEvent({ event }: { event: HistoryEvent }) {
   return (
     <div className="font-sans">
       <div className="flex items-center justify-between">
-        <p className="text-xs font-bold mb-1">{event.details.from}</p>
+        <p className="text-xs font-bold mb-1">
+          Comment {event?.updatedBy?.name ? 'by ' : ''}
+          <span
+            className="bg-slate-200 dark:bg-slate-950 px-1 text-black dark:text-white rounded-md cursor-pointer"
+            title={event?.updatedBy?.email}
+          >
+            {event?.updatedBy?.name ? `@${event?.updatedBy?.name}` : ''}
+          </span>
+        </p>
         <p className="text-xs text-gray-500">
           {dayjs(event.createdAt).format('DD MMM YYYY')} at{' '}
           {dayjs(event.createdAt).format('hh:MM a')}
@@ -193,6 +213,33 @@ function CommentEvent({ event }: { event: HistoryEvent }) {
       <pre className="text-xs italic bg-gray-100 rounded bg-slate-200/30 dark:bg-slate-500/30 p-2 break-words whitespace-break-spaces overflow-y-auto max-h-60 scrollbar">
         {event.details.text}
       </pre>
+    </div>
+  );
+}
+function DueDateChanged({ event }: { event: HistoryEvent }) {
+  return (
+    <div className="font-sans">
+      <div className="flex items-center justify-between">
+        <p className="text-xs font-bold mb-1">
+          Due Date changed {event?.updatedBy?.name ? 'by ' : ''}
+          <span
+            className="bg-slate-200 dark:bg-slate-950 px-1 text-black dark:text-white rounded-md cursor-pointer"
+            title={event?.updatedBy?.email}
+          >
+            {event?.updatedBy?.name ? `@${event?.updatedBy?.name}` : ''}
+          </span>
+        </p>
+        <p className="text-xs text-gray-500">
+          {dayjs(event.createdAt).format('DD MMM YYYY')} at{' '}
+          {dayjs(event.createdAt).format('hh:MM a')}
+        </p>
+      </div>
+
+      <div className="text-xs flex items-center italic bg-gray-100 rounded bg-slate-200/30 dark:bg-slate-500/30 p-2 break-words whitespace-break-spaces overflow-y-auto max-h-60 scrollbar">
+        {dayjs(event.details.from).format('DD MMM YYYY hh:mm: a')}{' '}
+        <ArrowRight className="w-4 h-4 mx-2" />
+        {dayjs(event.details.to).format('DD MMM YYYY hh:mm: a')}
+      </div>
     </div>
   );
 }

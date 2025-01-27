@@ -161,3 +161,15 @@ export const copyToClipboard = async function (
     return false;
   }
 };
+
+export function getEndDate(selectedDate: string) {
+  // Convert selected date to dayjs object
+  const localDate = dayjs(selectedDate);
+
+  // Get the end of the day (23:59:59.999)
+  const endOfDay = localDate.endOf('day');
+
+  return endOfDay.toISOString();
+
+  // console.log('End of day (local):', endOfDay.format()); // Logs: End of day in local time
+}

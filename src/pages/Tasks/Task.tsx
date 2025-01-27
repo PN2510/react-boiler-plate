@@ -10,6 +10,7 @@ import {
   TaskStatusColors,
 } from '../../common/enums';
 import dayjs from 'dayjs';
+import 'react-datepicker/dist/react-datepicker.css';
 
 const Task = () => {
   const { taskId } = useParams();
@@ -324,6 +325,8 @@ import TaskStatusHistory from './TaskStatusHistory';
 import { useLoginStore } from '../../store/useLoginStore';
 import { ConvertEditable } from '../../my-components/ConvertEditable';
 import toast from 'react-hot-toast';
+import DatePicker from 'react-datepicker';
+import { getEndDate } from '../../common/utils';
 
 export const TaskMetaInformation = ({
   task,
@@ -341,6 +344,9 @@ export const TaskMetaInformation = ({
   const [taskPriority, setTaskPriority] = useState<keyof typeof TaskPriority>(
     task?.priority as keyof typeof TaskPriority,
   );
+  const [taskDueDate, setTaskDueDate] = useState<Date | null>(
+    new Date(task?.dueDate),
+  );
   useEffect(() => {
     if (task?.priority) {
       setTaskPriority(task.priority as keyof typeof TaskPriority);
@@ -356,6 +362,25 @@ export const TaskMetaInformation = ({
           from: task.priority,
           userId: user?.userId,
           to: value,
+        },
+      },
+    };
+
+    performTaskAction(task.taskId!, task.projectId!, payload);
+  };
+
+  const handleDueDateChange = (value: Date | null, _comment?: string) => {
+    setTaskDueDate(value);
+    const newDueDate = getEndDate(value?.toISOString()!);
+
+    const payload = {
+      dueDate: newDueDate,
+      action: {
+        eventType: TaskEvents.DUE_DATE_CHANGE,
+        details: {
+          from: task.dueDate,
+          userId: user?.userId,
+          to: newDueDate,
         },
       },
     };
@@ -465,6 +490,19 @@ export const TaskMetaInformation = ({
               </div>
             </>
           )}
+
+          <span>Due date</span>
+
+          <div className="col-span-2">
+            <DatePicker
+              autoComplete="false"
+              placeholderText="Select start date"
+              className="w-full px-2 py-1 rounded-md border-2 border-slate-300 dark:border-slate-600 bg-transparent"
+              selected={taskDueDate ? new Date(taskDueDate) : null}
+              onChange={(date: Date | null) => handleDueDateChange(date)}
+              dateFormat="d/MM/yyyy"
+            />
+          </div>
         </AccordionContent>
       </AccordionItem>
     </Accordion>
