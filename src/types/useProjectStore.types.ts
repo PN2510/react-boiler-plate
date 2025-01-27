@@ -33,7 +33,7 @@ export type CreatedBy = {
 };
 
 export interface ProjectQuery extends Query {
-  name?: string[];
+  name?: string;
   isDefault?: boolean;
   projectId?: string[];
 }

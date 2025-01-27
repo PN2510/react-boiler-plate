@@ -29,11 +29,20 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { User } from '../../types/useUserStore.types';
 import { getEndDate } from '../../common/utils';
+import Select from 'react-select';
+import { useCommonStore } from '../../store/useCommonStore';
+import {
+  darkModeStyles,
+  lightModeStyles,
+} from '../../common/react-select.styles';
 
 const validationSchema = yup.object().shape({
   drawingTitle: yup.string().required('Title is required'),
   description: yup.string().max(1000, 'Maximum 1000 characters allowed'),
-  projectId: yup.string().required('Project is required'),
+  projectId: yup
+    .object()
+    .typeError('Project required')
+    .required('Project required'),
   teamId: yup.string().required('Team is required'),
   priority: yup
     .mixed()
@@ -58,6 +67,7 @@ const AddTaskDialog = ({ query, skip, limit }: Props) => {
   const { addTask, fetchTasks } = useTaskStore();
   const { fetchTaskMembers, teams } = useTeamStore();
   const { fetchProjects, projects } = useProjectStore();
+  const { isDarkMode } = useCommonStore();
   const {
     control,
     register,
@@ -73,9 +83,12 @@ const AddTaskDialog = ({ query, skip, limit }: Props) => {
     data.status = TaskStatus.PENDING.toUpperCase();
 
     data.dueDate = getEndDate(data.dueDate);
-    const { projectId, ...rest } = data;
+    const {
+      projectId: { value: projectIdValue },
+      ...rest
+    } = data;
 
-    const success = await addTask(projectId, rest);
+    const success = await addTask(projectIdValue, rest);
 
     if (success) {
       reset();
@@ -92,7 +105,7 @@ const AddTaskDialog = ({ query, skip, limit }: Props) => {
       reset();
       fetchProjects({
         paginate: false,
-        select: ['projectId', 'name'],
+        select: ['projectId', 'name', 'projectCode'],
       });
       loadMembersOptions();
     }
@@ -163,21 +176,24 @@ const AddTaskDialog = ({ query, skip, limit }: Props) => {
               name="projectId"
               control={control}
               render={({ field }) => (
-                <select
+                <Select
                   {...field}
-                  className="py-2.5 px-2 rounded-md border-2 border-slate-300 dark:border-slate-600 bg-transparent dark:bg-slate-900"
-                  // defaultValue={projects?.data?.at(0)?.projectId}
-                  defaultValue={''}
-                >
-                  <option value="" disabled className="text-xs">
-                    Select Project
-                  </option>
-                  {projects?.data?.map((p) => (
-                    <option key={p.projectId} value={p.projectId}>
-                      {p.name}
-                    </option>
-                  ))}
-                </select>
+                  styles={isDarkMode ? darkModeStyles : lightModeStyles}
+                  placeholder={
+                    <span className="text-slate-500">Select project</span>
+                  }
+                  options={
+                    (projects?.data?.map((project) => ({
+                      value: project?.projectId,
+                      label: `${project?.name} (${project?.projectCode})`,
+                    })) ?? []) as any
+                  }
+                  className="react-select-container"
+                  classNamePrefix="react-select"
+                  onChange={(selected) => {
+                    field.onChange(selected);
+                  }}
+                />
               )}
             />
             <p className="text-red-500 text-[9px]">

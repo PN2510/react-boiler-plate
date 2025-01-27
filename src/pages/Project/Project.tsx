@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Table, { ColumnDef } from '../../common/Table';
 import { useProjectStore } from '../../store/useProjectStore';
 import {
@@ -17,6 +17,7 @@ import {
 } from '../../my-components/Tooltip';
 import { copyToClipboard } from '../../common/utils';
 import toast from 'react-hot-toast';
+import useDebounce from '../../hooks/useDebounce';
 
 const Project = () => {
   const { fetchProjects, projects } = useProjectStore();
@@ -156,11 +157,39 @@ const Project = () => {
     },
   ];
 
+  const [searchText, setSearchText] = useDebounce<string>('');
+
+  useEffect(() => {
+    if (searchText)
+      _setQuery({
+        ...query,
+        name: searchText,
+      });
+    else {
+      _setQuery({
+        ...query,
+        name: undefined,
+      });
+    }
+  }, [searchText]);
+
   return (
     <>
       {/* <Breadcrumb pageName="Project" /> */}
       <div className="w-full max-w-full flex flex-col items-end rounded-md h-full">
-        <AddProjectDialog query={query} skip={skip} limit={limit} />
+        <div className="w-full flex flex-col sm:flex-row sm:items-center justify-between">
+          <input
+            type="text"
+            placeholder="Enter project name"
+            className="py-1 px-4 rounded-md border border-slate-400 placeholder:text-sm placeholder:text-slate-400 "
+            value={searchText}
+            onChange={(e) => {
+              const text = e.target?.value;
+              setSearchText(text);
+            }}
+          />
+          <AddProjectDialog query={query} skip={skip} limit={limit} />
+        </div>
         <EditProjectDialog
           query={query}
           skip={skip}
