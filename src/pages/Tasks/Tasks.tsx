@@ -182,7 +182,7 @@ const Tasks = () => {
       render: (row) => (
         <div>
           <p className="text-xs">
-            {dayjs(row?.dueDate).format('DD/MM/YYYY hh:mm a')}
+            {dayjs(row?.dueDate).format('DD/MM/YYYY')}
           </p>
         </div>
       ),
