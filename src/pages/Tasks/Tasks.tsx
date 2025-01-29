@@ -155,14 +155,14 @@ const Tasks = () => {
       label: 'Status',
       type: 'element',
       render: (row) => (
-        <span
-          className={`px-2 py-0.5 text-xs rounded-xl ${TaskStatusColors[
+        <div
+          className={`w-18 px-2 min-w-fit py-0.5 text-xs rounded-xl ${TaskStatusColors[
             row?.status as keyof typeof TaskStatus
           ]?.bg} ${TaskStatusColors[row?.status as keyof typeof TaskStatus]
             ?.text}`}
         >
           {TaskStatus[row?.status as keyof typeof TaskStatus]}
-        </span>
+        </div>
       ),
     },
 
@@ -173,7 +173,19 @@ const Tasks = () => {
           ? 'Employee Name'
           : 'Assigned to',
       type: 'element',
-      render: (row) => <span>{row?.assignedTo?.name}</span>,
+      render: (row) => <span className="text-xs">{row?.assignedTo?.name}</span>,
+    },
+    {
+      key: 'dueDate',
+      label: 'Due Date',
+      type: 'element',
+      render: (row) => (
+        <div>
+          <p className="text-xs">
+            {dayjs(row?.dueDate).format('DD/MM/YYYY hh:mm a')}
+          </p>
+        </div>
+      ),
     },
     {
       key: 'createdBy',
@@ -182,7 +194,9 @@ const Tasks = () => {
       render: (row) => (
         <div>
           <p> {row?.createdBy?.name}</p>
-          <p>on: {dayjs(row?.createdAt).format('DD/MM/YYYY hh:mm a')}</p>
+          <p className="text-[10px]">
+            {dayjs(row?.createdAt).format('DD/MM/YYYY hh:mm a')}
+          </p>
         </div>
       ),
     },

@@ -158,14 +158,16 @@ const Project = () => {
   ];
 
   const [searchText, setSearchText] = useDebounce<string>('');
+  const [searchTextClinetName, setSearchTextClinetName] =
+    useDebounce<string>('');
 
   useEffect(() => {
-    if (searchText)
+    if (searchText) {
       _setQuery({
         ...query,
         name: searchText,
       });
-    else {
+    } else {
       _setQuery({
         ...query,
         name: undefined,
@@ -173,21 +175,47 @@ const Project = () => {
     }
   }, [searchText]);
 
+  useEffect(() => {
+    if (searchTextClinetName) {
+      _setQuery({
+        ...query,
+        clientName: searchTextClinetName,
+      });
+    } else {
+      _setQuery({
+        ...query,
+        clientName: undefined,
+      });
+    }
+  }, [searchTextClinetName]);
+
   return (
     <>
       {/* <Breadcrumb pageName="Project" /> */}
       <div className="w-full max-w-full flex flex-col items-end rounded-md h-full">
         <div className="w-full flex flex-col sm:flex-row sm:items-center justify-between">
-          <input
-            type="text"
-            placeholder="Enter project name"
-            className="py-1 px-4 rounded-md border border-slate-400 placeholder:text-sm placeholder:text-slate-400 "
-            value={searchText}
-            onChange={(e) => {
-              const text = e.target?.value;
-              setSearchText(text);
-            }}
-          />
+          <div className="flex flex-col md:flex-row gap-2">
+            <input
+              type="text"
+              placeholder="Search by project name"
+              className="py-1 px-4 rounded-md border border-slate-400 placeholder:text-sm placeholder:text-slate-400 "
+              value={searchText}
+              onChange={(e) => {
+                const text = e.target?.value;
+                setSearchText(text);
+              }}
+            />
+            <input
+              type="text"
+              placeholder="Search by client name"
+              className="py-1 px-4 rounded-md border border-slate-400 placeholder:text-sm placeholder:text-slate-400 "
+              value={searchTextClinetName}
+              onChange={(e) => {
+                const text = e.target?.value;
+                setSearchTextClinetName(text);
+              }}
+            />
+          </div>
           <AddProjectDialog query={query} skip={skip} limit={limit} />
         </div>
         <EditProjectDialog

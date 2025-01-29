@@ -34,6 +34,7 @@ export type CreatedBy = {
 
 export interface ProjectQuery extends Query {
   name?: string;
+  clientName?: string;
   isDefault?: boolean;
   projectId?: string[];
 }
