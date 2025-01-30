@@ -34,22 +34,47 @@ export const TaskStatusColors = {
   },
 };
 
+// export enum ProjectStatus {
+//   NEW = 'New',
+//   IN_PROGRESS = 'In Progress',
+//   COMPLETED = 'Completed',
+//   CANCELLED = 'Cancelled',
+//   ON_HOLD = 'On Hold',
+// }
+
+// export const ProjectStatusColors = {
+//   NEW: {
+//     text: 'text-white',
+//     bg: 'bg-sky-500', // Blue represents a fresh or new task
+//   },
+//   IN_PROGRESS: {
+//     text: 'text-white',
+//     bg: 'bg-yellow-500', // Yellow represents active work or ongoing progress
+//   },
+//   COMPLETED: {
+//     text: 'text-white',
+//     bg: 'bg-green-500', // Green represents a successfully completed task
+//   },
+//   ON_HOLD: {
+//     text: 'text-white',
+//     bg: 'bg-slate-500', // Gray represents tasks that are paused or pending
+//   },
+//   CANCELLED: {
+//     text: 'text-white',
+//     bg: 'bg-red-500', // Red represents tasks that have been cancelled or abandoned
+//   },
+// };
+
 export enum ProjectStatus {
-  NEW = 'New',
-  IN_PROGRESS = 'In Progress',
+  ON_GOING = 'On Going',
   COMPLETED = 'Completed',
-  CANCELLED = 'Cancelled',
   ON_HOLD = 'On Hold',
 }
 
 export const ProjectStatusColors = {
-  NEW: {
+  ON_GOING: {
     text: 'text-white',
     bg: 'bg-sky-500', // Blue represents a fresh or new task
-  },
-  IN_PROGRESS: {
-    text: 'text-white',
-    bg: 'bg-yellow-500', // Yellow represents active work or ongoing progress
   },
   COMPLETED: {
     text: 'text-white',
@@ -58,10 +83,6 @@ export const ProjectStatusColors = {
   ON_HOLD: {
     text: 'text-white',
     bg: 'bg-slate-500', // Gray represents tasks that are paused or pending
-  },
-  CANCELLED: {
-    text: 'text-white',
-    bg: 'bg-red-500', // Red represents tasks that have been cancelled or abandoned
   },
 };
 
@@ -164,6 +185,7 @@ export enum TaskEvents {
 export enum RolesEnum {
   'DIRECTOR' = 'DIRECTOR',
   'TEAM_LEAD' = 'TEAM_LEAD',
+  'ADMIN' = 'ADMIN',
   'ASSISTANT_TEAM_LEAD' = 'ASSISTANT_TEAM_LEAD',
   'DRAUGHTSMAN' = 'DRAUGHTSMAN',
   'ARCHITECT' = 'ARCHITECT',

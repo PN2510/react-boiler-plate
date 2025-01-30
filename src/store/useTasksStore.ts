@@ -99,4 +99,20 @@ export const useTaskStore = create<TaskStoreType>((set, get) => ({
       return false;
     }
   },
+  deleteTask: async (taskId: string, projectId: string) => {
+    try {
+      const res = await API.delete(
+        replaceUrlParams(`${TASKS}/:taskId`, { taskId, projectId }),
+      );
+      if (res.status == 200) {
+        toast.success('Task deleted successfully');
+        return true;
+      }
+      toast.error('Task could not be deleted!');
+      return false;
+    } catch (error) {
+      toast.error('Task could not be deleted!');
+      return false;
+    }
+  },
 }));

@@ -13,10 +13,17 @@ export type User = {
   isActive: boolean;
 };
 
-export interface UserQuery extends Query {}
+export interface UserQuery extends Query {
+  name?: string;
+}
 
 export interface UserStoreType {
   users: Data<User>;
   fetchUsers: (query: UserQuery) => void;
+  fetchEmployees: (query: UserQuery) => Promise<undefined | User[]>;
   addUser: (payload: User) => Promise<undefined | boolean>;
+  editUser: (
+    userId: string,
+    payload: Partial<User>,
+  ) => Promise<undefined | boolean>;
 }

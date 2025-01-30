@@ -8,17 +8,24 @@ export const lightModeStyles = {
     '&:hover': {
       borderColor: 'rgb(107 114 128)', // Tailwind gray-500
     },
+    zIndex: 20,
+    width: '200px',
+  }),
+  valueContainer: (baseStyle) => ({
+    ...baseStyle,
+    padding: '0px 5px',
+    margin: '0px',
   }),
   menu: (provided) => ({
     ...provided,
     backgroundColor: 'white',
     color: 'black',
+    zIndex: 2,
   }),
   menuList: (provided) => ({
     ...provided,
     backgroundColor: 'white',
     color: 'black',
-    zIndex: 20,
   }),
   option: (provided, { isFocused }) => ({
     ...provided,
@@ -64,7 +71,7 @@ export const darkModeStyles = {
     ...provided,
     backgroundColor: 'rgb(31 41 55)', // Tailwind gray-800
     color: 'white',
-    zIndex: 14,
+    zIndex: 2,
   }),
   option: (provided, { isFocused }) => ({
     ...provided,

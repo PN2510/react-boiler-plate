@@ -4,16 +4,15 @@ import { UserRolesQuery } from './useUserRolesStore.types';
 
 export type Team = {
   id: string;
-  projectId: string;
   name: string;
-  members: string[];
-  membersData?: Member[];
   createdById?: string;
-  teamLeadId?: string;
+  teamLeadId: string;
+  teamLead?: TeamLead;
   updatedAt?: Date;
   createdAt?: Date;
-  project?: Project;
-  teamLead?: TeamLead;
+  assistantTeamLeadIds?: string[];
+  assistantTeamLeadData?: string;
+  isActive: boolean;
 };
 
 export type Member = {
@@ -62,4 +61,9 @@ export interface TeamStoreType {
   fetchMembers: (query: MemberQuery) => Promise<Data<Member>>;
   fetchTaskMembers: (query: MemberQuery) => Promise<Data<User>>;
   fetchTeamLeads: (query: UserRolesQuery) => Promise<Data<TeamLeadOptionType>>;
+  showMembers: (teamId: string) => void;
+  editTeam: (
+    teamId: string,
+    payload: Partial<Team>,
+  ) => Promise<undefined | boolean>;
 }

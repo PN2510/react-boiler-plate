@@ -69,6 +69,7 @@ export interface TaskQuery extends Query {
   priority?: string[];
   status?: string[];
   teamId?: string[];
+  assignedToId?: string[];
   createdAt?: { startDate?: string; endDate?: string };
 }
 
@@ -98,5 +99,9 @@ export interface TaskStoreType {
     projectId: string,
     payload: object,
     isSingleTask?: boolean,
+  ) => Promise<boolean | undefined>;
+  deleteTask: (
+    taskId: string,
+    projectId: string,
   ) => Promise<boolean | undefined>;
 }

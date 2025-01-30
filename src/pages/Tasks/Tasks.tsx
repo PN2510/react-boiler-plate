@@ -12,8 +12,9 @@ import {
   TaskPriorityColors,
   ROLES,
   TaskEvents,
+  RolesEnum,
 } from '../../common/enums';
-import { BadgeInfo, Mail, Send } from 'lucide-react';
+import { BadgeInfo, Mail, Send, Trash } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useLoginStore } from '../../store/useLoginStore';
 import { useProjectStore } from '../../store/useProjectStore';
@@ -30,7 +31,7 @@ import { useTeamStore } from '../../store/useTeamStore';
 import dayjs from 'dayjs';
 const Tasks = () => {
   const { authenticatedUserRoleId, user } = useLoginStore();
-  const { fetchTasks, tasks, performTaskAction } = useTaskStore();
+  const { fetchTasks, tasks, performTaskAction, deleteTask } = useTaskStore();
   const { fetchProjects } = useProjectStore();
   const { fetchTeams } = useTeamStore();
   const [skip, setSkip] = useState(0);
@@ -73,6 +74,13 @@ const Tasks = () => {
       false,
     );
     if (success) fetchTasks({ ...query, skip, limit, paginate: true });
+  };
+
+  const handleDeleteTask = async (taskId: string, projectId: string) => {
+    const success = await deleteTask(taskId, projectId);
+    if (success) {
+      fetchTasks({ ...query, skip, limit, paginate: true });
+    }
   };
 
   const columns: ColumnDef[] = [
@@ -165,7 +173,6 @@ const Tasks = () => {
         </div>
       ),
     },
-
     {
       key: 'assignedTo',
       label:
@@ -181,9 +188,7 @@ const Tasks = () => {
       type: 'element',
       render: (row) => (
         <div>
-          <p className="text-xs">
-            {dayjs(row?.dueDate).format('DD/MM/YYYY')}
-          </p>
+          <p className="text-xs">{dayjs(row?.dueDate).format('DD/MM/YYYY')}</p>
         </div>
       ),
     },
@@ -267,6 +272,20 @@ const Tasks = () => {
               </button>
             </a>
           )}
+
+          {[RolesEnum.ADMIN, RolesEnum.DIRECTOR].includes(
+            authenticatedUserRoleId as RolesEnum,
+          ) && (
+            <button
+              title="delete task"
+              onClick={() => {
+                handleDeleteTask(row?.taskId, row?.projectId);
+              }}
+              className="flex items-center justify-center p-1.5 rounded-full text-white  hover:bg-red-600 bg-red-500"
+            >
+              <Trash size={14} />
+            </button>
+          )}
         </div>
       ),
     },
@@ -286,19 +305,6 @@ const Tasks = () => {
       <div className="w-full max-w-full flex flex-col rounded-md h-full">
         <div className="flex flex-col md:flex-row gap-2 md:items-center md:justify-between">
           <TaskFilters query={query} setQuery={_setQuery} />
-          {/* <label htmlFor="priority" className="text-sm">
-            Team:
-            <CustomDropdown
-              options={initialOptions}
-              placeholder="Select an option"
-              isMulti={false}
-              onSelect={(selected) => setSingleSelected(selected)}
-              onLoadMore={loadMoreOptions}
-            />
-            {singleSelected && (
-              <p className="mt-2">Selected: {singleSelected.label}</p>
-            )}
-          </label> */}
           <AddTaskDialog limit={limit} query={query} skip={skip} />
         </div>
         <Table
@@ -336,11 +342,19 @@ export function getInitialStatusFilterArray(role: string) {
         (status) => !['COMPLETED', 'IN_REVIEW'].includes(status),
       );
     case ROLES.ARCHITECT:
-      return Object.keys(TaskStatus).map((status) => status);
+      return Object.keys(TaskStatus).filter(
+        (status) => !['COMPLETED'].includes(status),
+      );
+
     case ROLES.DRAUGHTSMAN:
-      return Object.keys(TaskStatus).map((status) => status);
+      return Object.keys(TaskStatus).filter(
+        (status) => !['COMPLETED'].includes(status),
+      );
+
     case ROLES.INTERN:
-      return Object.keys(TaskStatus).map((status) => status);
+      return Object.keys(TaskStatus).filter(
+        (status) => !['COMPLETED'].includes(status),
+      );
 
     default:
       return undefined;

@@ -8,12 +8,13 @@ import { useProjectStore } from '../../store/useProjectStore';
 import {
   ProjectCategory,
   ProjectCategoryColors,
+  RolesEnum,
   TaskPriority,
   TaskPriorityColors,
   TaskStatus,
   TaskStatusColors,
 } from '../../common/enums';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { BadgeInfo, Mail } from 'lucide-react';
 import { getEmail } from '../../common/utils';
 import {
@@ -26,6 +27,7 @@ import {
 const Approvals = () => {
   const { authenticatedUserRoleId, permissionEntities, user } = useLoginStore();
   const { fetchApprovalResquests, approvals } = useApprovalStore();
+  const navigate = useNavigate();
   const { fetchProjects, projects } = useProjectStore();
   const [skip, setSkip] = useState(0);
   const [limit, setLimit] = useState(10);
@@ -190,6 +192,17 @@ const Approvals = () => {
       ),
     },
   ];
+
+  useEffect(() => {
+    if (
+      authenticatedUserRoleId &&
+      [RolesEnum.ADMIN, RolesEnum.DIRECTOR].includes(
+        authenticatedUserRoleId as RolesEnum,
+      )
+    ) {
+      navigate('/tasks');
+    }
+  }, [authenticatedUserRoleId]);
 
   return (
     <>

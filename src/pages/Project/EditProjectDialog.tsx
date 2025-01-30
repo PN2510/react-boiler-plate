@@ -17,6 +17,7 @@ import {
   ProjectCategory,
   ProjectPriority,
   ProjectStatus,
+  ROLES,
 } from '../../common/enums';
 import { Project, ProjectQuery } from '../../types/useProjectStore.types';
 import AsyncSelect from 'react-select/async';
@@ -28,12 +29,14 @@ import { useCommonStore } from '../../store/useCommonStore';
 import { UserRolesQuery } from '../../types/useUserRolesStore.types';
 import { useTeamStore } from '../../store/useTeamStore';
 import { getModifiedFields } from '../../common/utils';
+import { useLoginStore } from '../../store/useLoginStore';
 
 const validationSchema = yup.object().shape({
   name: yup.string().required('title is required'),
   description: yup.string().required('Description is required'),
   projectCode: yup.string().required('Project code is required'),
   clientName: yup.string().required('Client name is required'),
+  companyName: yup.string(),
   clientEmailId: yup
     .string()
     .test('is-valid-emails', 'Invalid client email provided', (value) => {
@@ -83,6 +86,7 @@ const EditProjectDialog = ({
   setIsEditModalOpen,
   project,
 }: Props) => {
+  const { authenticatedUserRoleId } = useLoginStore();
   const { editProject, fetchProjects } = useProjectStore();
   const { isDarkMode } = useCommonStore();
   const { fetchTeamLeads } = useTeamStore();
@@ -132,6 +136,7 @@ const EditProjectDialog = ({
         clientName,
         clientEmailId,
         location,
+        companyName,
       } = project;
       setValue('name', name);
       setValue('category', category);
@@ -143,10 +148,11 @@ const EditProjectDialog = ({
       setValue('clientName', clientName);
       setValue('clientEmailId', clientEmailId);
       setValue('location', location);
+      setValue('companyName', companyName ?? '');
     }
   }, [project]);
 
-  const loadTeamLeadsOptions = async (inputValue: string = '') => {
+  const loadTeamLeadsOptions = async (_inputValue: string = '') => {
     const query: UserRolesQuery = {
       paginate: false,
       roleId: ['TEAM_LEAD'],
@@ -275,64 +281,50 @@ const EditProjectDialog = ({
           </div>
           <div className="flex flex-col">
             <label className="text-xs">Status:</label>
-            <Controller
-              name="status"
-              control={control}
-              render={({ field }) => (
-                <select
-                  {...field}
-                  className="py-2.5 px-2 rounded-md border-2 border-slate-300 dark:border-slate-600 bg-transparent dark:bg-slate-900"
-                >
-                  {Object.entries(ProjectStatus).map(([key, status]) => (
-                    <option key={status} value={key}>
-                      {status}
-                    </option>
-                  ))}
-                </select>
-              )}
-            />
+            <select
+              {...register('status')}
+              className="py-2.5 px-2 rounded-md border-2 border-slate-300 dark:border-slate-600 bg-transparent dark:bg-slate-900"
+            >
+              {Object.entries(ProjectStatus).map(([key, status]) => (
+                <option key={status} value={key}>
+                  {status}
+                </option>
+              ))}
+            </select>
+
             <p className="text-red-500 text-[9px]">{errors?.status?.message}</p>
           </div>
           <div className="flex flex-col">
             <label className="text-xs">Category:</label>
-            <Controller
-              name="category"
-              control={control}
-              render={({ field }) => (
-                <select
-                  {...field}
-                  className="py-2.5 px-2 rounded-md border-2 border-slate-300 dark:border-slate-600 bg-transparent dark:bg-slate-900"
-                >
-                  {Object.entries(ProjectCategory).map(([key, category]) => (
-                    <option key={category} value={key}>
-                      {category}
-                    </option>
-                  ))}
-                </select>
-              )}
-            />
+
+            <select
+              {...register('category')}
+              className="py-2.5 px-2 rounded-md border-2 border-slate-300 dark:border-slate-600 bg-transparent dark:bg-slate-900"
+            >
+              {Object.entries(ProjectCategory).map(([key, category]) => (
+                <option key={category} value={key}>
+                  {category}
+                </option>
+              ))}
+            </select>
+
             <p className="text-red-500 text-[9px]">
               {errors?.category?.message}
             </p>
           </div>
           <div className="flex flex-col">
             <label className="text-xs">Priority:</label>
-            <Controller
-              name="priority"
-              control={control}
-              render={({ field }) => (
-                <select
-                  {...field}
-                  className="py-2.5 px-2 rounded-md border-2 border-slate-300 dark:border-slate-600 bg-transparent dark:bg-slate-900"
-                >
-                  {Object.entries(ProjectPriority).map(([key, priority]) => (
-                    <option key={priority} value={key}>
-                      {priority}
-                    </option>
-                  ))}
-                </select>
-              )}
-            />
+
+            <select
+              {...register('priority')}
+              className="py-2.5 px-2 rounded-md border-2 border-slate-300 dark:border-slate-600 bg-transparent dark:bg-slate-900"
+            >
+              {Object.entries(ProjectPriority).map(([key, priority]) => (
+                <option key={priority} value={key}>
+                  {priority}
+                </option>
+              ))}
+            </select>
             <p className="text-red-500 text-[9px]">
               {errors?.priority?.message}
             </p>
@@ -358,6 +350,20 @@ const EditProjectDialog = ({
               {errors?.startDate?.message}
             </p>
           </div>
+
+          {authenticatedUserRoleId === ROLES.DIRECTOR && (
+            <div className="flex flex-col">
+              <label className="text-xs">Company Name:</label>
+              <input
+                className="px-2 py-[10px] rounded-md border-2 border-slate-300 dark:border-slate-600 bg-transparent"
+                {...register('companyName')}
+                placeholder="Enter Company Name"
+              />
+              <p className="text-red-500 text-[9px]">
+                {errors?.companyName?.message}
+              </p>
+            </div>
+          )}
 
           <button
             type="submit"

@@ -7,7 +7,7 @@ import {
 } from '../../types/useProjectStore.types';
 import AddProjectDialog from './AddProjectDialog';
 import dayjs from 'dayjs';
-import { Copy, Pencil } from 'lucide-react';
+import { Pencil } from 'lucide-react';
 import EditProjectDialog from './EditProjectDialog';
 import {
   Tooltip,
@@ -15,9 +15,8 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '../../my-components/Tooltip';
-import { copyToClipboard } from '../../common/utils';
-import toast from 'react-hot-toast';
 import useDebounce from '../../hooks/useDebounce';
+import { ProjectStatus } from '../../common/enums';
 
 const Project = () => {
   const { fetchProjects, projects } = useProjectStore();
@@ -27,6 +26,7 @@ const Project = () => {
     paginate: true,
     isActive: true,
     relation: true,
+    status: [Object.keys(ProjectStatus).at(0) as keyof typeof ProjectStatus],
   });
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -198,7 +198,7 @@ const Project = () => {
             <input
               type="text"
               placeholder="Search by project name"
-              className="py-1 px-4 rounded-md border border-slate-400 placeholder:text-sm placeholder:text-slate-400 "
+              className="py-1 px-4 rounded-md border border-slate-300 placeholder:text-sm dark:border-slate-600 placeholder:text-slate-400 dark:bg-slate-900"
               value={searchText}
               onChange={(e) => {
                 const text = e.target?.value;
@@ -208,13 +208,33 @@ const Project = () => {
             <input
               type="text"
               placeholder="Search by client name"
-              className="py-1 px-4 rounded-md border border-slate-400 placeholder:text-sm placeholder:text-slate-400 "
+              className="py-1 px-4 rounded-md border border-slate-300 placeholder:text-sm dark:border-slate-600 placeholder:text-slate-400 dark:bg-slate-900"
               value={searchTextClinetName}
               onChange={(e) => {
                 const text = e.target?.value;
                 setSearchTextClinetName(text);
               }}
             />
+            <select
+              onChange={(e) => {
+                const value = e.target.value;
+                 _setQuery({
+                  ...query,
+                  status: [value],
+                });
+              }}
+              className="py-1 px-2 rounded-md border text-sm placeholder:text-sm border-slate-300 dark:border-slate-600 bg-transparent dark:bg-slate-900"
+            >
+              <option value="" disabled className="text-sm">
+                Select status
+              </option>
+
+              {Object.entries(ProjectStatus).map(([key, status]) => (
+                <option key={status} value={key} className="text-sm">
+                  {status}
+                </option>
+              ))}
+            </select>
           </div>
           <AddProjectDialog query={query} skip={skip} limit={limit} />
         </div>

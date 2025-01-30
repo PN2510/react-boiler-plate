@@ -17,6 +17,16 @@ export const useUserStore = create<UserStoreType>((set) => ({
       // console.log('fetchUsers: ~ error:', error);
     }
   },
+  fetchEmployees: async (query: UserQuery) => {
+    try {
+      const res = await API.get(replaceUrlParams(USERS, query), {
+        params: query,
+      });
+      return res.data;
+    } catch (error) {
+      // console.log('fetchUsers: ~ error:', error);
+    }
+  },
   addUser: async (payload: User) => {
     try {
       const res = await API.post(USERS, payload);
@@ -29,6 +39,26 @@ export const useUserStore = create<UserStoreType>((set) => ({
     } catch (error: any) {
       toast.error(
         error?.['response']?.data?.message ?? 'User could not be added!',
+      );
+      // console.log('addUser: ~ error:', error);
+      return false;
+    }
+  },
+  editUser: async (userId: string, payload: Partial<User>) => {
+    try {
+      const res = await API.patch(
+        replaceUrlParams(`${USERS}/:userId`, { userId }),
+        payload,
+      );
+
+      if (res.status == 200) {
+        toast.success('User edited successfully');
+        return true;
+      }
+      return false;
+    } catch (error: any) {
+      toast.error(
+        error?.['response']?.data?.message ?? 'User could not be edited!',
       );
       // console.log('addUser: ~ error:', error);
       return false;

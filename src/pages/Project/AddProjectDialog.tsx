@@ -21,6 +21,7 @@ import {
   ProjectCategory,
   ProjectPriority,
   ProjectStatus,
+  ROLES,
 } from '../../common/enums';
 import { ProjectQuery } from '../../types/useProjectStore.types';
 import AsyncSelect from 'react-select/async';
@@ -32,6 +33,7 @@ import {
 } from '../../common/react-select.styles';
 import { useTeamStore } from '../../store/useTeamStore';
 import { useProjectStore } from '../../store/useProjectStore';
+import { useLoginStore } from '../../store/useLoginStore';
 
 const validationSchema = yup.object().shape({
   name: yup.string().required('title is required'),
@@ -48,7 +50,11 @@ const validationSchema = yup.object().shape({
     }),
   description: yup.string().required('Description is required'),
   location: yup.string().required('Project location is required'),
-
+  companyName: yup.string(),
+  status: yup
+    .mixed()
+    .oneOf(Object.keys(ProjectStatus))
+    .required('Status is required'),
   priority: yup
     .mixed()
     .oneOf(Object.keys(ProjectPriority))
@@ -71,6 +77,7 @@ type Props = { query: ProjectQuery; skip: number; limit: number };
 
 const AddProjectDialog = ({ limit, query, skip }: Props) => {
   const { isDarkMode } = useCommonStore();
+  const { authenticatedUserRoleId } = useLoginStore();
   const { fetchTeamLeads } = useTeamStore();
   const { addProject, fetchProjects } = useProjectStore();
 
@@ -90,7 +97,6 @@ const AddProjectDialog = ({ limit, query, skip }: Props) => {
   });
 
   const onSubmit = async (data: any) => {
-    data.status = ProjectStatus.NEW.toUpperCase();
     data.teamLeadId = data.teamLeadId.value;
     const success = await addProject(data);
 
@@ -144,13 +150,13 @@ const AddProjectDialog = ({ limit, query, skip }: Props) => {
 
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="overflow-y-auto h-[calc(100vh-50vh)] max-h-[calc(100vh-30%)] scrollbar md:px-5 flex flex-col md:grid md:grid-cols-2 gap-2 text-xs"
+          className="overflow-y-auto h-[calc(100vh-50vh)] md:h-fit max-h-[calc(100vh-30%)] scrollbar md:px-5 flex flex-col md:grid md:grid-cols-2 gap-2 text-xs"
         >
           <div className="flex flex-col gap-2 md:col-span-1 md:gap-3">
             <div className="flex flex-col">
               <label className="text-xs">Project Name:</label>
               <input
-                className="px-2 py-2.5 rounded-md border-2 border-slate-300 dark:border-slate-600 bg-transparent"
+                className="px-2 py-[10px] rounded-md border-2 border-slate-300 dark:border-slate-600 bg-transparent"
                 {...register('name')}
                 placeholder="Enter Project Name"
               />
@@ -159,7 +165,7 @@ const AddProjectDialog = ({ limit, query, skip }: Props) => {
             <div className="flex flex-col">
               <label className="text-xs">Project Code:</label>
               <input
-                className="px-2 py-2.5 rounded-md border-2 border-slate-300 dark:border-slate-600 bg-transparent"
+                className="px-2 py-[10px] rounded-md border-2 border-slate-300 dark:border-slate-600 bg-transparent"
                 {...register('projectCode')}
                 placeholder="Enter Project Code"
               />
@@ -170,7 +176,7 @@ const AddProjectDialog = ({ limit, query, skip }: Props) => {
             <div className="flex flex-col">
               <label className="text-xs">Client Name:</label>
               <input
-                className="px-2 py-2.5 rounded-md border-2 border-slate-300 dark:border-slate-600 bg-transparent"
+                className="px-2 py-[10px] rounded-md border-2 border-slate-300 dark:border-slate-600 bg-transparent"
                 {...register('clientName')}
                 placeholder="Enter Client Name"
               />
@@ -181,9 +187,9 @@ const AddProjectDialog = ({ limit, query, skip }: Props) => {
             <div className="flex flex-col">
               <label className="text-xs">Client Email ID:</label>
               <input
-                className="px-2 py-2.5 rounded-md border-2 border-slate-300 dark:border-slate-600 bg-transparent"
+                className="px-2 py-[10px] rounded-md border-2 border-slate-300 dark:border-slate-600 bg-transparent"
                 {...register('clientEmailId')}
-                placeholder="Enter Client email id"
+                placeholder="Enter Client Email id"
               />
               <p className="text-red-500 text-[9px]">
                 {errors?.clientEmailId?.message}
@@ -192,7 +198,7 @@ const AddProjectDialog = ({ limit, query, skip }: Props) => {
             <div className="flex flex-col">
               <label className="text-xs">Project location:</label>
               <input
-                className="px-2 py-2.5 rounded-md border-2 border-slate-300 dark:border-slate-600 bg-transparent"
+                className="px-2 py-[10px] rounded-md border-2 border-slate-300 dark:border-slate-600 bg-transparent"
                 {...register('location')}
                 placeholder="Enter Project location"
               />
@@ -203,20 +209,34 @@ const AddProjectDialog = ({ limit, query, skip }: Props) => {
             <div className="flex flex-col">
               <label className="text-xs">Project construction area:</label>
               <input
-                className="px-2 py-2.5 rounded-md border-2 border-slate-300 dark:border-slate-600 bg-transparent"
+                className="px-2 py-[10px] rounded-md border-2 border-slate-300 dark:border-slate-600 bg-transparent"
                 {...register('constructionArea')}
-                placeholder="Enter Project construction area"
+                placeholder="Enter Project Construction Area"
               />
               <p className="text-red-500 text-[9px]">
                 {errors?.constructionArea?.message}
               </p>
             </div>
+
+            {authenticatedUserRoleId === ROLES.DIRECTOR && (
+              <div className="flex flex-col">
+                <label className="text-xs">Company Name:</label>
+                <input
+                  className="px-2 py-[10px] rounded-md border-2 border-slate-300 dark:border-slate-600 bg-transparent"
+                  {...register('companyName')}
+                  placeholder="Enter Company Name"
+                />
+                <p className="text-red-500 text-[9px]">
+                  {errors?.companyName?.message}
+                </p>
+              </div>
+            )}
           </div>
           <div className="flex flex-col gap-2 md:col-span-1 md:gap-3">
             <div className="flex flex-col">
               <label className="text-xs">Description:</label>
               <input
-                className="px-2 py-2.5 rounded-md border-2 border-slate-300 dark:border-slate-600 bg-transparent"
+                className="px-2 py-[10px] rounded-md border-2 border-slate-300 dark:border-slate-600 bg-transparent"
                 {...register('description')}
                 placeholder="Enter description"
               />
@@ -258,8 +278,8 @@ const AddProjectDialog = ({ limit, query, skip }: Props) => {
                 control={control}
                 render={({ field }) => (
                   <DatePicker
-                    placeholderText="Select start date"
-                    className="w-full px-2 py-2.5 rounded-md border-2 border-slate-300 dark:border-slate-600 bg-transparent"
+                    placeholderText="Select Start Date"
+                    className="w-full px-2 py-[10px] rounded-md border-2 border-slate-300 dark:border-slate-600 bg-transparent"
                     {...field}
                     selected={field.value ? new Date(field.value) : null}
                     onChange={(date: Date | null) => field.onChange(date)}
@@ -273,46 +293,54 @@ const AddProjectDialog = ({ limit, query, skip }: Props) => {
             </div>
             <div className="flex flex-col">
               <label className="text-xs">Category:</label>
-              <Controller
-                name="category"
-                control={control}
-                render={({ field }) => (
-                  <select
-                    {...field}
-                    className="py-2.5 px-2 rounded-md border-2 border-slate-300 dark:border-slate-600 bg-transparent dark:bg-slate-900"
-                  >
-                    {Object.entries(ProjectCategory).map(([key, category]) => (
-                      <option key={category} value={key}>
-                        {category}
-                      </option>
-                    ))}
-                  </select>
-                )}
-              />
+              <select
+                {...register('category')}
+                className="py-[9px] px-2 rounded-md border-2 border-slate-300 dark:border-slate-600 bg-transparent dark:bg-slate-900"
+              >
+                {Object.entries(ProjectCategory).map(([key, category]) => (
+                  <option key={category} value={key}>
+                    {category}
+                  </option>
+                ))}
+              </select>
               <p className="text-red-500 text-[9px]">
                 {errors?.category?.message}
               </p>
             </div>
             <div className="flex flex-col">
               <label className="text-xs">Priority:</label>
-              <Controller
-                name="priority"
-                control={control}
-                render={({ field }) => (
-                  <select
-                    {...field}
-                    className="py-2.5 px-2 rounded-md border-2 border-slate-300 dark:border-slate-600 bg-transparent dark:bg-slate-900"
-                  >
-                    {Object.entries(ProjectPriority).map(([key, priority]) => (
-                      <option key={priority} value={key}>
-                        {priority}
-                      </option>
-                    ))}
-                  </select>
-                )}
-              />
+
+              <select
+                {...register('priority')}
+                className="py-[9px] px-2 rounded-md border-2 border-slate-300 dark:border-slate-600 bg-transparent dark:bg-slate-900"
+              >
+                {Object.entries(ProjectPriority).map(([key, priority]) => (
+                  <option key={priority} value={key}>
+                    {priority}
+                  </option>
+                ))}
+              </select>
+
               <p className="text-red-500 text-[9px]">
                 {errors?.priority?.message}
+              </p>
+            </div>
+
+            <div className="flex flex-col">
+              <label className="text-xs">Status:</label>
+              <select
+                {...register('status')}
+                className="py-2.5 px-2 rounded-md border-2 border-slate-300 dark:border-slate-600 bg-transparent dark:bg-slate-900"
+              >
+                {Object.entries(ProjectStatus).map(([key, status]) => (
+                  <option key={status} value={key}>
+                    {status}
+                  </option>
+                ))}
+              </select>
+
+              <p className="text-red-500 text-[9px]">
+                {errors?.status?.message}
               </p>
             </div>
           </div>

@@ -15,6 +15,7 @@ export type Project = {
   createdAt?: Date;
   projectCode: string;
   clientName: string;
+  companyName?: string;
   clientEmailId?: string;
   constructionArea: string;
   location: string;
@@ -37,6 +38,7 @@ export interface ProjectQuery extends Query {
   clientName?: string;
   isDefault?: boolean;
   projectId?: string[];
+  status?: string[];
 }
 
 export interface ProjectStoreType {
