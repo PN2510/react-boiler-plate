@@ -135,7 +135,7 @@ const Teams = () => {
                 });
               }}
             />
-            {query.isActive ? 'Archived' : 'Active'} Teams
+            {!query.isActive ? 'Archived' : 'Active'} Teams
           </label>
           <AddTeamDialog query={query} skip={skip} limit={limit} />
         </div>
