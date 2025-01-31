@@ -1,5 +1,5 @@
 import { Data, Query } from './common.types';
-import { User } from './user.types';
+import { User } from './useUserStore.types';
 import { Roles } from './useRoleStore.types';
 
 export type UserRoles = {
@@ -22,7 +22,7 @@ export interface UserRolesQuery extends Query {
   relation?: boolean;
 }
 export interface UserQuery extends Query {
-  name?: string[];
+  name?: string;
   roleId?: string[];
   isDefault?: boolean;
   relation?: boolean;

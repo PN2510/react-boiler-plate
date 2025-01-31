@@ -53,23 +53,28 @@ const EditUser = ({
   const { editUser, fetchUsers } = useUserStore();
 
   const onSubmit = async (data: any) => {
-    console.log('🚀 ~ onSubmit ~ data:', data);
     if (user?.userId) {
-      const updatedData = getModifiedFields(user, data);
-      console.log('🚀 ~ onSubmit ~ updatedData:', updatedData);
+      const updatedData = getModifiedFields(
+        {
+          email: user.email,
+          isActive: user.isActive,
+          name: user.name,
+        },
+        data,
+      );
 
       if (!Object.keys(updatedData)?.length) {
         toast.error('You have not made any changes!');
         return;
       }
-      // const success = await editUser(user?.userId, updatedData as User);
-      // if (success) {
-      //   reset();
-      //   setIsEditModalOpen(false);
-      //   query.skip = skip;
-      //   query.limit = limit;
-      //   fetchUsers(query);
-      // }
+      const success = await editUser(user?.userId, updatedData as User);
+      if (success) {
+        reset();
+        setIsEditModalOpen(false);
+        query.skip = skip;
+        query.limit = limit;
+        fetchUsers(query);
+      }
     }
   };
 
@@ -78,7 +83,7 @@ const EditUser = ({
       const { name, email, isActive } = user;
       setValue('name', name);
       setValue('email', email);
-      setValue('isActive', !isActive);
+      setValue('isActive', isActive);
     }
   }, [user]);
 
@@ -123,7 +128,7 @@ const EditUser = ({
                 {...register('isActive')}
                 className="cursor-pointer"
               />
-              Suspend user
+              Active user
             </label>
           </div>
 

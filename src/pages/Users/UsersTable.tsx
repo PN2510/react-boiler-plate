@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import Table, { ColumnDef } from '../../common/Table';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { UserQuery } from '../../types/useUserRolesStore.types';
 import { useUserStore } from '../../store/useUserStore';
 import { UsersLinks } from './Users';
