@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import { ROLES } from './enums';
+import { RolesEnum } from './enums';
 
 dayjs.extend(relativeTime);
 
@@ -81,16 +81,16 @@ export const getModifiedFields = <T extends object, N extends object>(
 
 export const getTaskMembersRoles = (role: string) => {
   switch (role) {
-    case ROLES.DIRECTOR:
-      return Object.keys(ROLES);
-    case ROLES.TEAM_LEAD:
-      return [ROLES.DRAUGHTSMAN, ROLES.ARCHITECT, ROLES.TEAM_LEAD];
-    case ROLES.ARCHITECT:
-      return [ROLES.ARCHITECT];
-    case ROLES.DRAUGHTSMAN:
-      return [ROLES.DRAUGHTSMAN];
+    case RolesEnum.DIRECTOR:
+      return Object.keys(RolesEnum);
+    case RolesEnum.TEAM_LEAD:
+      return [RolesEnum.DRAUGHTSMAN, RolesEnum.ARCHITECT, RolesEnum.TEAM_LEAD];
+    case RolesEnum.ARCHITECT:
+      return [RolesEnum.ARCHITECT];
+    case RolesEnum.DRAUGHTSMAN:
+      return [RolesEnum.DRAUGHTSMAN];
     default:
-      return [ROLES.ARCHITECT, ROLES.DRAUGHTSMAN];
+      return [RolesEnum.ARCHITECT, RolesEnum.DRAUGHTSMAN];
   }
 };
 

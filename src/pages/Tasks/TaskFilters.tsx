@@ -1,4 +1,4 @@
-import { ROLES, TaskPriority, TaskStatus } from '../../common/enums';
+import { RolesEnum, TaskPriority, TaskStatus } from '../../common/enums';
 import { useLoginStore } from '../../store/useLoginStore';
 import { useProjectStore } from '../../store/useProjectStore';
 import { TaskQuery } from '../../types/useTasksStore.types';
@@ -137,8 +137,8 @@ const TaskFilters = ({ setQuery, query }: TaskFiltersPropType) => {
         </select>
       </label>
 
-      {[ROLES.DIRECTOR, ROLES.TEAM_LEAD].includes(
-        authenticatedUserRoleId as ROLES,
+      {[RolesEnum.DIRECTOR, RolesEnum.TEAM_LEAD].includes(
+        authenticatedUserRoleId as RolesEnum,
       ) && (
         <label htmlFor="projects" className="text-sm">
           <p>Projects:</p>
@@ -183,7 +183,9 @@ const TaskFilters = ({ setQuery, query }: TaskFiltersPropType) => {
           className="rounded-md border-2 border-slate-300 bg-transparent px-2 py-1 placeholder:text-slate-500 dark:border-slate-600 dark:bg-slate-900"
         />
       </label>
-      {[ROLES.DIRECTOR].includes(authenticatedUserRoleId as ROLES) && (
+      {[RolesEnum.DIRECTOR, RolesEnum.ADMIN].includes(
+        authenticatedUserRoleId as RolesEnum,
+      ) && (
         <label htmlFor="team" className="text-sm">
           <p>Team:</p>
           <select
@@ -215,7 +217,9 @@ const TaskFilters = ({ setQuery, query }: TaskFiltersPropType) => {
         </label>
       )}
 
-      {[ROLES.DIRECTOR].includes(authenticatedUserRoleId as ROLES) && (
+      {[RolesEnum.DIRECTOR, RolesEnum.ADMIN].includes(
+        authenticatedUserRoleId as RolesEnum,
+      ) && (
         <label htmlFor="employee" className="text-sm">
           <p>Employee:</p>
           <AsyncSelect

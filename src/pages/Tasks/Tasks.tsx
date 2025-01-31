@@ -10,7 +10,6 @@ import {
   ProjectCategory,
   TaskPriority,
   TaskPriorityColors,
-  ROLES,
   TaskEvents,
   RolesEnum,
 } from '../../common/enums';
@@ -127,9 +126,10 @@ const Tasks = () => {
       type: 'text',
       render: (row) => (
         <span
-          className={`px-4 py-0.5 text-xs rounded-xl font-medium ${TaskPriorityColors[
-            row?.priority as keyof typeof TaskPriority
-          ]?.style}`}
+          className={`px-4 py-0.5 text-xs rounded-xl font-medium ${
+            TaskPriorityColors[row?.priority as keyof typeof TaskPriority]
+              ?.style
+          }`}
         >
           {TaskPriority[row?.priority as keyof typeof TaskPriority]}
         </span>
@@ -142,11 +142,15 @@ const Tasks = () => {
       render: (row) => (
         <div className="flex gap-2">
           <span
-            className={`px-2 py-0.5 text-xs rounded-xl ${ProjectCategoryColors[
-              row?.project?.category as keyof typeof ProjectCategory
-            ]?.bg} ${ProjectCategoryColors[
-              row?.project?.category as keyof typeof ProjectCategory
-            ]?.text}`}
+            className={`px-2 py-0.5 text-xs rounded-xl ${
+              ProjectCategoryColors[
+                row?.project?.category as keyof typeof ProjectCategory
+              ]?.bg
+            } ${
+              ProjectCategoryColors[
+                row?.project?.category as keyof typeof ProjectCategory
+              ]?.text
+            }`}
           >
             {
               ProjectCategory[
@@ -164,10 +168,9 @@ const Tasks = () => {
       type: 'element',
       render: (row) => (
         <div
-          className={`w-18 px-2 min-w-fit py-0.5 text-xs rounded-xl ${TaskStatusColors[
-            row?.status as keyof typeof TaskStatus
-          ]?.bg} ${TaskStatusColors[row?.status as keyof typeof TaskStatus]
-            ?.text}`}
+          className={`w-18 px-2 min-w-fit py-0.5 text-xs rounded-xl ${
+            TaskStatusColors[row?.status as keyof typeof TaskStatus]?.bg
+          } ${TaskStatusColors[row?.status as keyof typeof TaskStatus]?.text}`}
         >
           {TaskStatus[row?.status as keyof typeof TaskStatus]}
         </div>
@@ -329,29 +332,33 @@ export default Tasks;
 
 export function getInitialStatusFilterArray(role: string) {
   switch (role) {
-    case ROLES.DIRECTOR:
+    case RolesEnum.DIRECTOR:
       return Object.keys(TaskStatus).filter(
         (status) => !['COMPLETED'].includes(status),
       );
-    case ROLES.TEAM_LEAD:
+    case RolesEnum.ADMIN:
+      return Object.keys(TaskStatus).filter(
+        (status) => !['COMPLETED'].includes(status),
+      );
+    case RolesEnum.TEAM_LEAD:
       return Object.keys(TaskStatus).filter(
         (status) => !['COMPLETED', 'IN_REVIEW'].includes(status),
       );
-    case ROLES.ASSISTANT_TEAM_LEAD:
+    case RolesEnum.ASSISTANT_TEAM_LEAD:
       return Object.keys(TaskStatus).filter(
         (status) => !['COMPLETED', 'IN_REVIEW'].includes(status),
       );
-    case ROLES.ARCHITECT:
+    case RolesEnum.ARCHITECT:
       return Object.keys(TaskStatus).filter(
         (status) => !['COMPLETED'].includes(status),
       );
 
-    case ROLES.DRAUGHTSMAN:
+    case RolesEnum.DRAUGHTSMAN:
       return Object.keys(TaskStatus).filter(
         (status) => !['COMPLETED'].includes(status),
       );
 
-    case ROLES.INTERN:
+    case RolesEnum.INTERN:
       return Object.keys(TaskStatus).filter(
         (status) => !['COMPLETED'].includes(status),
       );

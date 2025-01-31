@@ -21,7 +21,7 @@ import {
   ProjectCategory,
   ProjectPriority,
   ProjectStatus,
-  ROLES,
+  RolesEnum,
 } from '../../common/enums';
 import { ProjectQuery } from '../../types/useProjectStore.types';
 import AsyncSelect from 'react-select/async';
@@ -218,7 +218,7 @@ const AddProjectDialog = ({ limit, query, skip }: Props) => {
               </p>
             </div>
 
-            {authenticatedUserRoleId === ROLES.DIRECTOR && (
+            {authenticatedUserRoleId === RolesEnum.DIRECTOR && (
               <div className="flex flex-col">
                 <label className="text-xs">Company Name:</label>
                 <input

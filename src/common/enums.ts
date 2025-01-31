@@ -195,11 +195,3 @@ export enum RolesEnum {
 export const EMAIL_REGEXP =
   /^(?:[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:\\[\x01-\x09\x0b\x0c\x0e-\x7f]|[^"\\\r\n])*")@(?:(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}|(?:\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-zA-Z0-9-]*[a-zA-Z0-9]:[^\x00-\x20\x7f-\xff]+)\]))/;
 
-export enum ROLES {
-  'DIRECTOR' = 'DIRECTOR',
-  'DRAUGHTSMAN' = 'DRAUGHTSMAN',
-  'ARCHITECT' = 'ARCHITECT',
-  'TEAM_LEAD' = 'TEAM_LEAD',
-  'ASSISTANT_TEAM_LEAD' = 'ASSISTANT_TEAM_LEAD',
-  'INTERN' = 'INTERN',
-}
