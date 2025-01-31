@@ -8,8 +8,7 @@ export const lightModeStyles = {
     '&:hover': {
       borderColor: 'rgb(107 114 128)', // Tailwind gray-500
     },
-    zIndex: 20,
-    width: '200px',
+    minWidth: '200px',
   }),
   valueContainer: (baseStyle) => ({
     ...baseStyle,
@@ -45,6 +44,7 @@ export const darkModeStyles = {
     '&:hover': {
       borderColor: 'rgb(75 85 99)', // Tailwind gray-600
     },
+    minWidth: '200px',
   }),
 
   valueContainer: (baseStyle) => ({

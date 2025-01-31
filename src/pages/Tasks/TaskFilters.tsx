@@ -9,6 +9,12 @@ import dayjs from 'dayjs';
 import { useTeamStore } from '../../store/useTeamStore';
 import { getInitialStatusFilterArray } from './Tasks';
 import { useUserStore } from '../../store/useUserStore';
+import AsyncSelect from 'react-select/async';
+import {
+  darkModeStyles,
+  lightModeStyles,
+} from '../../common/react-select.styles';
+import { useCommonStore } from '../../store/useCommonStore';
 
 type TaskFiltersPropType = {
   query: TaskQuery;
@@ -17,6 +23,7 @@ type TaskFiltersPropType = {
 
 const TaskFilters = ({ setQuery, query }: TaskFiltersPropType) => {
   const { authenticatedUserRoleId } = useLoginStore();
+  const { isDarkMode } = useCommonStore();
   const { projects } = useProjectStore();
   const { teams } = useTeamStore();
   const [startDate, setStartDate] = useState();
@@ -45,23 +52,23 @@ const TaskFilters = ({ setQuery, query }: TaskFiltersPropType) => {
     }
   };
   const { fetchEmployees } = useUserStore();
-  // const loadEmployeeOptions = async (inputValue: string) => {
-  //   const query: any = {
-  //     isActive: true,
-  //     paginate: false, // Enable pagination
-  //     select: ['name', 'userId'],
-  //   };
-  //   if (inputValue) {
-  //     query['name'] = inputValue;
-  //   }
-  //   const res = await fetchEmployees(query);
-  //   const options = res.data.map((user) => ({
-  //     value: user.userId,
-  //     label: user.name,
-  //   }));
+  const loadEmployeeOptions = async (inputValue: string) => {
+    const query: any = {
+      isActive: true,
+      paginate: false, // Enable pagination
+      select: ['name', 'userId'],
+    };
+    if (inputValue) {
+      query['name'] = inputValue;
+    }
+    const res = await fetchEmployees(query);
+    const options = res?.data?.map((user) => ({
+      value: user.userId,
+      label: user.name,
+    }));
 
-  //   return options;
-  // };
+    return options;
+  };
 
   return (
     <div className="mb-2 flex flex-row flex-wrap gap-4">
@@ -207,25 +214,29 @@ const TaskFilters = ({ setQuery, query }: TaskFiltersPropType) => {
           </select>
         </label>
       )}
-      {/* 
-      <label htmlFor="employee" className="text-sm">
-        <p>Employee:</p>
-        <AsyncSelect
-          cacheOptions
-          defaultOptions
-          loadOptions={loadEmployeeOptions as any}
-          styles={isDarkMode ? darkModeStyles : lightModeStyles}
-          placeholder={<span className="text-slate-500">Select Employee</span>}
-          className="react-select-container"
-          classNamePrefix="react-select"
-          onChange={(selected: any) => {
-            setQuery({
-              ...query,
-              assignedToId: selected ? [selected['value']] : undefined,
-            });
-          }}
-        />
-      </label> */}
+
+      {[ROLES.DIRECTOR].includes(authenticatedUserRoleId as ROLES) && (
+        <label htmlFor="employee" className="text-sm">
+          <p>Employee:</p>
+          <AsyncSelect
+            cacheOptions
+            defaultOptions
+            loadOptions={loadEmployeeOptions as any}
+            styles={isDarkMode ? darkModeStyles : lightModeStyles}
+            placeholder={
+              <span className="text-slate-500">Select Employee</span>
+            }
+            className="react-select-container"
+            classNamePrefix="react-select"
+            onChange={(selected: any) => {
+              setQuery({
+                ...query,
+                assignedToId: selected ? [selected['value']] : undefined,
+              });
+            }}
+          />
+        </label>
+      )}
     </div>
   );
 };
