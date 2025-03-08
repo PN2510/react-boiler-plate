@@ -45,7 +45,7 @@ const validationSchema = yup.object().shape({
       const emailRegex = EMAIL_REGEXP; // Basic email regex
       return emails.every((email) => emailRegex.test(email));
     }),
-
+  constructionArea: yup.string().required('Construction Area is required'),
   location: yup.string().required('Project location is required'),
   status: yup
     .mixed()
@@ -137,6 +137,7 @@ const EditProjectDialog = ({
         clientEmailId,
         location,
         companyName,
+        constructionArea,
       } = project;
       setValue('name', name);
       setValue('category', category);
@@ -149,6 +150,7 @@ const EditProjectDialog = ({
       setValue('clientEmailId', clientEmailId);
       setValue('location', location);
       setValue('companyName', companyName ?? '');
+      setValue('constructionArea', constructionArea ?? '');
     }
   }, [project]);
 
@@ -348,6 +350,18 @@ const EditProjectDialog = ({
             />
             <p className="text-red-500 text-[9px]">
               {errors?.startDate?.message}
+            </p>
+          </div>
+
+          <div className="flex flex-col">
+            <label className="text-xs">Project construction area:</label>
+            <input
+              className="px-2 py-[10px] rounded-md border-2 border-slate-300 dark:border-slate-600 bg-transparent"
+              {...register('constructionArea')}
+              placeholder="Enter Project Construction Area"
+            />
+            <p className="text-red-500 text-[9px]">
+              {errors?.constructionArea?.message}
             </p>
           </div>
 
