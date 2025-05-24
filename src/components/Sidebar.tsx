@@ -251,7 +251,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                 'READ',
                 '*',
               )}
-              {![RolesEnum.ADMIN, RolesEnum.DIRECTOR].includes(
+              {![RolesEnum.ADMIN].includes(
                 authenticatedUserRoleId as RolesEnum,
               ) &&
                 renderWithAccessControl(

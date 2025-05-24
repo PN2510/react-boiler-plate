@@ -201,6 +201,7 @@ const AddProjectDialog = ({ query, skip, limit }: Props) => {
           <div className="flex flex-col">
             <label className="text-xs">Team Lead:</label>
             <select
+            defaultValue={""}
               {...register('teamLeadId')}
               className="px-2 py-2 border-2 border-slate-300 dark:border-slate-600 bg-transparent rounded-md placeholder:text-slate-400"
             >

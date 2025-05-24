@@ -118,6 +118,7 @@ export const useLoginStore = create<LoginStoreType>((set) => ({
       ? JSON.parse(Cookies.get('user')!)
       : undefined;
     const loggedInUserId = Cookies.get('loggedInUserId');
+    const accessToken = Cookies.get('token');
 
     set(() => ({
       user,
@@ -126,6 +127,7 @@ export const useLoginStore = create<LoginStoreType>((set) => ({
       loggedInUserId,
       permissionEntities,
       isAuthenticated,
+      token: accessToken,
     }));
     return isAuthenticated;
   },

@@ -196,7 +196,7 @@ const Approvals = () => {
   useEffect(() => {
     if (
       authenticatedUserRoleId &&
-      [RolesEnum.ADMIN, RolesEnum.DIRECTOR].includes(
+      [RolesEnum.ADMIN].includes(
         authenticatedUserRoleId as RolesEnum,
       )
     ) {
