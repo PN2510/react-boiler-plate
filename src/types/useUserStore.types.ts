@@ -11,6 +11,8 @@ export type User = {
   createdAt: Date;
   updatedAt: Date;
   isActive: boolean;
+  userRole?: { roleId?: string; role?: { name?: string } }[];
+  roleId?: string;
 };
 
 export interface UserQuery extends Query {

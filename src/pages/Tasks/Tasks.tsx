@@ -352,8 +352,11 @@ export function getInitialStatusFilterArray(role: string) {
       return Object.keys(TaskStatus).filter(
         (status) => !['COMPLETED'].includes(status),
       );
-
     case RolesEnum.DRAUGHTSMAN:
+      return Object.keys(TaskStatus).filter(
+        (status) => !['COMPLETED'].includes(status),
+      );
+    case RolesEnum.INTERIOR_DESIGNER:
       return Object.keys(TaskStatus).filter(
         (status) => !['COMPLETED'].includes(status),
       );

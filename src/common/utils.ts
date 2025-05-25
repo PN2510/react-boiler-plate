@@ -89,6 +89,8 @@ export const getTaskMembersRoles = (role: string) => {
       return [RolesEnum.ARCHITECT];
     case RolesEnum.DRAUGHTSMAN:
       return [RolesEnum.DRAUGHTSMAN];
+    case RolesEnum.INTERIOR_DESIGNER:
+      return [RolesEnum.INTERIOR_DESIGNER];
     default:
       return [RolesEnum.ARCHITECT, RolesEnum.DRAUGHTSMAN];
   }

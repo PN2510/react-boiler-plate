@@ -190,6 +190,7 @@ export enum RolesEnum {
   'DRAUGHTSMAN' = 'DRAUGHTSMAN',
   'ARCHITECT' = 'ARCHITECT',
   'INTERN' = 'INTERN',
+  'INTERIOR_DESIGNER' = 'INTERIOR_DESIGNER',
 }
 
 export const EMAIL_REGEXP =

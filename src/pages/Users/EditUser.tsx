@@ -13,12 +13,14 @@ import { useEffect } from 'react';
 import { getModifiedFields } from '../../common/utils';
 import { useUserStore } from '../../store/useUserStore';
 import toast from 'react-hot-toast';
+import { useRoleStore } from '../../store/useRoleStore';
 
 const validationSchema = yup
   .object({
     name: yup.string().required('Name is required'),
     email: yup.string().required('Email id is required').email(),
     isActive: yup.boolean(),
+    roleId: yup.string().required('Please select a role'),
   })
   .required();
 
@@ -51,6 +53,7 @@ const EditUser = ({
   });
 
   const { editUser, fetchUsers } = useUserStore();
+  const { roles, fetchRoles } = useRoleStore();
 
   const onSubmit = async (data: any) => {
     if (user?.userId) {
@@ -59,6 +62,7 @@ const EditUser = ({
           email: user.email,
           isActive: user.isActive,
           name: user.name,
+          roleId: user?.userRole?.at(0)?.roleId,
         },
         data,
       );
@@ -80,12 +84,17 @@ const EditUser = ({
 
   useEffect(() => {
     if (user) {
-      const { name, email, isActive } = user;
+      const { name, email, isActive, userRole } = user;
       setValue('name', name);
       setValue('email', email);
       setValue('isActive', isActive);
+      setValue('roleId', userRole?.at(0)?.roleId ?? '');
     }
   }, [user]);
+
+  useEffect(() => {
+    fetchRoles({ paginate: true, isActive: true, limit: 200, skip: 0 });
+  }, []);
 
   return (
     <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
@@ -121,7 +130,7 @@ const EditUser = ({
             <p className="text-red-500 text-[9px]">{errors?.email?.message}</p>
           </div>
 
-          <div className="">
+          <div className="flex flex-colitems-center">
             <label className="w-fit flex gap-2 items-center cursor-pointer">
               <input
                 type="checkbox"
@@ -130,6 +139,26 @@ const EditUser = ({
               />
               Active user
             </label>
+          </div>
+
+          <div className="flex flex-col">
+            <label htmlFor="w-full flex gap-2 items-center cursor-pointer">
+              Role
+            </label>
+            <select
+              {...register('roleId')}
+              className="px-2 py-2.5 rounded-md border-2 border-slate-300 dark:border-slate-600 bg-transparent"
+            >
+              {roles?.data?.map((role) => (
+                <option
+                  value={role.roleId}
+                  key={role.id}
+                  className="text-black dark:text-white bg-white dark:bg-slate-900"
+                >
+                  {role.name}
+                </option>
+              ))}
+            </select>
           </div>
 
           <button

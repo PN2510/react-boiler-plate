@@ -150,6 +150,7 @@ const Task = () => {
             <button
               className="bg-blue-600 hover:bg-blue-700 p-2 rounded"
               onClick={handleComment}
+              disabled={!taskComment.trim()}
             >
               <SendHorizontal className="text-white" />
             </button>
@@ -166,6 +167,7 @@ const Task = () => {
                 [
                   RolesEnum.ARCHITECT,
                   RolesEnum.DRAUGHTSMAN,
+                  RolesEnum.INTERIOR_DESIGNER,
                   RolesEnum.INTERN,
                 ].includes(authenticatedUserRoleId as RolesEnum) &&
                 [
@@ -179,6 +181,7 @@ const Task = () => {
                   RolesEnum.ARCHITECT,
                   RolesEnum.DRAUGHTSMAN,
                   RolesEnum.INTERN,
+                  RolesEnum.INTERIOR_DESIGNER,
                 ].includes(authenticatedUserRoleId as RolesEnum) &&
                 TaskStatus[task.status as keyof typeof TaskStatus] ===
                   TaskStatus.COMPLETED;
@@ -217,10 +220,11 @@ const Task = () => {
             }}
           >
             <SelectTrigger
-              className={`w-[180px] text-sm font-medium focus:ring-0 border-0 ${TaskStatusColors[
-                taskStatus as keyof typeof TaskStatus
-              ]?.bg} ${TaskStatusColors[taskStatus as keyof typeof TaskStatus]
-                ?.text}`}
+              className={`w-[180px] text-sm font-medium focus:ring-0 border-0 ${
+                TaskStatusColors[taskStatus as keyof typeof TaskStatus]?.bg
+              } ${
+                TaskStatusColors[taskStatus as keyof typeof TaskStatus]?.text
+              }`}
             >
               <SelectValue placeholder="Select a status" />
             </SelectTrigger>
@@ -434,9 +438,10 @@ export const TaskMetaInformation = ({
               }}
             >
               <SelectTrigger
-                className={`w-[100px] text-xs h-7 font-medium focus:ring-0 border-0 ${TaskPriorityColors[
-                  taskPriority as keyof typeof TaskPriority
-                ]?.style}`}
+                className={`w-[100px] text-xs h-7 font-medium focus:ring-0 border-0 ${
+                  TaskPriorityColors[taskPriority as keyof typeof TaskPriority]
+                    ?.style
+                }`}
               >
                 <SelectValue placeholder="Select a Priority" className="p-0" />
               </SelectTrigger>
@@ -461,11 +466,15 @@ export const TaskMetaInformation = ({
           <div className="col-span-2 flex gap-2">
             <span className="font-semibold">{task?.project?.name}</span>
             <span
-              className={`px-2 py-0.5 text-xs rounded-xl ${ProjectCategoryColors[
-                task?.project?.category as keyof typeof ProjectCategory
-              ]?.bg} ${ProjectCategoryColors[
-                task?.project?.category as keyof typeof ProjectCategory
-              ]?.text}`}
+              className={`px-2 py-0.5 text-xs rounded-xl ${
+                ProjectCategoryColors[
+                  task?.project?.category as keyof typeof ProjectCategory
+                ]?.bg
+              } ${
+                ProjectCategoryColors[
+                  task?.project?.category as keyof typeof ProjectCategory
+                ]?.text
+              }`}
             >
               {
                 ProjectCategory[
