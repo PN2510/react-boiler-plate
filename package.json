@@ -9,9 +9,9 @@
     "preview": "vite preview"
   },
   "author": {
-    "name": "TailAdmin",
-    "email": "hello@tailadmin.com",
-    "url": "https://tailadmin.com"
+    "name": "HarizonArchitech",
+    "email": "HarizonArchitech@HarizonArchitech.com",
+    "url": "https://www.harizonarchitech.in"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
